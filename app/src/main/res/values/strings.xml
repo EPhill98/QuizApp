@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">cwQuizApp</string>
+    <string name="welcome_text">Welcome to my quiz App!</string>
+    <string name="enter_user_details">Enter Name &amp; Password</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_password">Password</string>
+    <string name="next_button">NEXT!</string>
+    <string name="login_button">LOGIN</string>
+    <string name="logout_button">LOGOUT</string>
+    <string name="reg_button">REGISTER</string>
+
+
+
+
+
+
+    <string name="cat_txt">Category: </string>
+    <string name="eg_q">EXAMPLE QUESTION?</string>
+    <string name="choice_txt">Make A Choice</string>
+    <string name="ans_txt">ANSWER</string>
+    <string name="greeting_text">Hello! Please sign in or register below!\n</string>
+    <string name="logged_in">Welcome %1$s\n</string>
+
+</resources>

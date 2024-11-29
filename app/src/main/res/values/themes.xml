@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CwQuizApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.CwQuizApp" parent="Base.Theme.CwQuizApp" />
+    <style name="Theme.AppBarAndSwipe"
+        parent="Theme.AppCompat.DayNight.DarkActionBar" />
+</resources>

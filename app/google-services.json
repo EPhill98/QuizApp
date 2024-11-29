@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "388947245593",
+    "project_id": "cwquizappfb",
+    "storage_bucket": "cwquizappfb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388947245593:android:2b92dab9f0790e39750888",
+        "android_client_info": {
+          "package_name": "com.example.cwquizapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa-0Q-7ZX0uViIDSlWD9BUc8c0PPRGUnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
