@@ -95,7 +95,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun loginClick() {
         Log.i(logCatTag, "Login Clicked")
-        if (emailTxt.text.toString() != "" || pwTxt.text.toString() != "" && currentUser != null) {
+
+        // Check if email or password is empty, and if currentUser is not null
+        if ((emailTxt.text.toString().isNotEmpty() && pwTxt.text.toString().isNotEmpty()) || currentUser != null) {
             myAuth.signInWithEmailAndPassword(
                 emailTxt.text.toString(),
                 pwTxt.text.toString()
@@ -107,13 +109,16 @@ class MainActivity : AppCompatActivity() {
                     closeKeyBoard()
                     displayMsg(loginBtn, "Login Failed")
                 }
+            }.addOnFailureListener(this) {
+                // Handle failure case
+                displayMsg(loginBtn, "Login Failed - Try Again")
             }
         } else {
-            displayMsg(loginBtn, "EMPTY FIELDS")
+            // Inform the user to fill out the fields
+            displayMsg(loginBtn, "Please enter both email and password")
         }
-
-
     }
+
     private fun update(){
         Log.i(logCatTag, "in update")
 

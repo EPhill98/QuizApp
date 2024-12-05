@@ -1,5 +1,7 @@
 package com.example.cwquizapp
 
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +19,17 @@ class MyApdapter (private val imageModelArrayList: MutableList<MyModel>) : Recyc
 
     override fun onBindViewHolder(holder: MyApdapter.ViewHolder, position: Int) {
         val info = imageModelArrayList[position]
-
         holder.imgView.setImageResource(info.getImages())
         holder.textMsg.text = info.getNames()
+
+        // Set the click listener for each item
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, QuestionActivity::class.java) // Replace NewActivity with your target activity
+            intent.putExtra("item_name", info.getNames()) // Pass data to the new activity
+            context.startActivity(intent)
+            Log.i("epdp", "clicked CAT")
+        }
     }
 
     override fun getItemCount(): Int {

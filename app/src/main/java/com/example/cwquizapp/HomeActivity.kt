@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import android.widget.Button
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,7 +37,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun launchQScreen() {
-        val newIntent = Intent(this, QuestonActivity::class.java)
+        val newIntent = Intent(this, QuestionActivity::class.java)
         startActivity(newIntent)
     }
 
