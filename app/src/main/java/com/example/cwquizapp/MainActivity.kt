@@ -12,53 +12,72 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var emailTxt : EditText
-    private lateinit var pwTxt : EditText
-    private lateinit var loginBtn : Button
-    private lateinit var regBtn : Button
+    // UI Elements
+    private lateinit var emailTxt: EditText
+    private lateinit var pwTxt: EditText
+    private lateinit var loginBtn: Button
+    private lateinit var regBtn: Button
     private lateinit var logoutBtn: Button
     private lateinit var nextBtn: Button
 
-
-    private var logCatTag  = "epdp"
-
-    private var myAuth = FirebaseAuth.getInstance()
+    // Firebase
+    private val myAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var currentUser = myAuth.currentUser
 
+    // Tag for logging
+    private val logCatTag = "MainActivity"
 
+    // Firebase Auth State Listener
+    private lateinit var authStateListener: FirebaseAuth.AuthStateListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         Log.i(logCatTag, "in onCreate")
         setContentView(R.layout.activity_main)
 
+        // Initialize UI elements
         emailTxt = findViewById(R.id.emailTxt)
         pwTxt = findViewById(R.id.passwordTxt)
-
         regBtn = findViewById(R.id.registerBtn)
         loginBtn = findViewById(R.id.loginBtn)
         logoutBtn = findViewById(R.id.logoutBtn)
-        nextBtn = findViewById<Button>(R.id.nextScreenBtn)
+        nextBtn = findViewById(R.id.nextScreenBtn)
 
-        loginBtn.setOnClickListener{_ -> loginClick()}
-        regBtn.setOnClickListener{v  -> regClick(v)}
-        logoutBtn.setOnClickListener{_ -> logoutClick()}
-        nextBtn.setOnClickListener{_ -> nextScreen()}
+        // Set click listeners
+        loginBtn.setOnClickListener { loginClick() }
+        regBtn.setOnClickListener { regClick(it) }
+        logoutBtn.setOnClickListener { logoutClick() }
+        nextBtn.setOnClickListener { nextScreen() }
 
-        update()
+        // Initialize Firebase AuthStateListener
+        authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            currentUser = firebaseAuth.currentUser
+            update()
+        }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        Log.i(logCatTag, "in onStart")
+        myAuth.addAuthStateListener(authStateListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i(logCatTag, "in onStop")
+        myAuth.removeAuthStateListener(authStateListener)
     }
 
     private fun nextScreen() {
         if (currentUser != null) {
-            val currentEmail = currentUser?.email // Get the current user's email
-            val newIntent = Intent(this, HomeActivity::class.java)
-            newIntent.putExtra("CURRENT_USER_EMAIL", currentEmail)
+            val newIntent = Intent(this, HomeActivity::class.java).apply {
+                putExtra("CURRENT_USER_ID", currentUser?.uid)
+            }
             startActivity(newIntent)
         } else {
             displayMsg(nextBtn, "No user logged in!")
@@ -67,99 +86,109 @@ class MainActivity : AppCompatActivity() {
 
     private fun logoutClick() {
         Log.i(logCatTag, "Logout Clicked")
-        currentUser = myAuth.currentUser
         myAuth.signOut()
+        currentUser = null
         update()
     }
 
-    private fun regClick(view : View) {
-        Log.i(logCatTag, "Reg Clicked")
-        if (myAuth.currentUser != null){
+    private fun regClick(view: View) {
+        Log.i(logCatTag, "Registration Clicked")
+
+        val email = emailTxt.text.toString()
+        val password = pwTxt.text.toString()
+
+        if (!isValidInput(email, password, view)) return
+
+        if (currentUser != null) {
             displayMsg(view, "Please logout first")
+            return
         }
-        else {
-            myAuth.createUserWithEmailAndPassword(
-                emailTxt.text.toString(),
-                pwTxt.text.toString()
-            ).addOnCompleteListener(this) {task ->
-                if (task.isSuccessful ){
+
+        myAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
                     closeKeyBoard()
                     update()
                 } else {
-                    closeKeyBoard()
+                    task.exception?.let {
+                        Log.e(logCatTag, "Registration Failed: ${it.localizedMessage}")
+                    }
                     displayMsg(view, "Registration Failed")
                 }
             }
-        }
     }
 
     private fun loginClick() {
         Log.i(logCatTag, "Login Clicked")
 
-        // Check if email or password is empty, and if currentUser is not null
-        if ((emailTxt.text.toString().isNotEmpty() && pwTxt.text.toString().isNotEmpty()) || currentUser != null) {
-            myAuth.signInWithEmailAndPassword(
-                emailTxt.text.toString(),
-                pwTxt.text.toString()
-            ).addOnCompleteListener(this) { task ->
+        val email = emailTxt.text.toString()
+        val password = pwTxt.text.toString()
+
+        if (!isValidInput(email, password, loginBtn)) return
+
+        myAuth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     closeKeyBoard()
                     update()
+                    saveUserDataToDatabase()
                 } else {
-                    closeKeyBoard()
+                    task.exception?.let {
+                        Log.e(logCatTag, "Login Failed: ${it.localizedMessage}")
+                    }
                     displayMsg(loginBtn, "Login Failed")
                 }
-            }.addOnFailureListener(this) {
-                // Handle failure case
-                displayMsg(loginBtn, "Login Failed - Try Again")
             }
-        } else {
-            // Inform the user to fill out the fields
-            displayMsg(loginBtn, "Please enter both email and password")
-        }
     }
 
-    private fun update(){
-        Log.i(logCatTag, "in update")
+    private fun isValidInput(email: String, password: String, view: View): Boolean {
+        if (email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            displayMsg(view, "Please enter a valid email")
+            return false
+        }
 
-        currentUser = myAuth.currentUser
+        if (password.isBlank() || password.length < 6) {
+            displayMsg(view, "Password must be at least 6 characters")
+            return false
+        }
 
-        var currentEmail = currentUser?.email
+        return true
+    }
+
+    private fun saveUserDataToDatabase() {
+        val userId = currentUser?.uid ?: return
+        val usersRef = FirebaseDatabase.getInstance().getReference("users")
+        val userData = mapOf(
+            "lastLogin" to ServerValue.TIMESTAMP,
+            "email" to currentUser?.email
+        )
+
+        usersRef.child(userId).setValue(userData)
+            .addOnSuccessListener {
+                Log.i(logCatTag, "User data updated successfully")
+            }
+            .addOnFailureListener { exception ->
+                Log.e(logCatTag, "Error updating user data: ${exception.localizedMessage}")
+            }
+    }
+
+    private fun update() {
+        Log.i(logCatTag, "Updating UI")
         val greetingSpace = findViewById<TextView>(R.id.greetingSpace)
-        if (currentEmail == null){
-            greetingSpace.text = getString(R.string.greeting_text)
-        } else {
-            greetingSpace.text = getString(R.string.logged_in, currentEmail)
-        }
+        greetingSpace.text = currentUser?.email?.let {
+            getString(R.string.logged_in, it)
+        } ?: getString(R.string.greeting_text)
     }
 
-    private fun closeKeyBoard(){
+    private fun closeKeyBoard() {
         val view = this.currentFocus
-        if (view != null){
-            val imn = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imn.hideSoftInputFromWindow(view.windowToken, 0)
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
-
-    private fun displayMsg(view : View, msgTxt : String){
-        val snackbar = Snackbar.make(view, msgTxt, Snackbar.LENGTH_SHORT)
-        snackbar.show()
+    private fun displayMsg(view: View, msgTxt: String) {
+        Snackbar.make(view, msgTxt, Snackbar.LENGTH_SHORT).show()
     }
-
-
-    override fun onStart(){
-        super.onStart()
-        Log.i(logCatTag, "in onStart")
-        update()
-    }
-
-    override fun onStop(){
-        super.onStop()
-        Log.i(logCatTag, "in onStop")
-        currentUser = myAuth.currentUser
-        myAuth.signOut()
-        update()
-    }
-
 }

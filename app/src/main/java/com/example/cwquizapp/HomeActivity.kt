@@ -2,13 +2,20 @@ package com.example.cwquizapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import kotlin.collections.getValue
 
 
 class HomeActivity : AppCompatActivity() {
@@ -17,10 +24,42 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.home_page)
 
         val root = findViewById<View>(android.R.id.content)
-        val currentUserEmail = intent.getStringExtra("CURRENT_USER_EMAIL")
+        val currentUserID = intent.getStringExtra("CURRENT_USER_ID")
 
-        val welcomeSnackbar = Snackbar.make(root,"WELCOME ${currentUserEmail.toString()}", Snackbar.LENGTH_LONG)
-        welcomeSnackbar.show()
+        val database = FirebaseDatabase.getInstance()
+        val usersRef = database.getReference("users").child(currentUserID!!)
+
+        usersRef.child("email").addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val userEmail = dataSnapshot.getValue(String::class.java)
+                // Use userEmail to display or perform other actions
+                val welcomeSnackbar = Snackbar.make(root, "WELCOME $userEmail", Snackbar.LENGTH_LONG)
+                welcomeSnackbar.show()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                // Handle errors
+                Log.e("HomeActivity", "Error getting user email: ${error.message}")
+            }
+        })
+
+        usersRef.child("lastLogin").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val userLoginTime = dataSnapshot.getValue(Long::class.java)
+                val lastLoginTimeTXT = findViewById<TextView>(R.id.lastLoginTxt)
+
+                if (userLoginTime != null) {
+                    val formattedTime = formatTimestamp(userLoginTime)
+                    lastLoginTimeTXT.text = "$formattedTime"
+                } else {
+                    lastLoginTimeTXT.text = "Unknown"
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("HomeActivity", "Error posting time: ${error.message}")
+            }
+        })
 
         val myToolbar: Toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(myToolbar)
@@ -66,5 +105,11 @@ class HomeActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+
+    private fun formatTimestamp(timestamp: Long): String {
+        val date = java.util.Date(timestamp)
+        val dateFormat = java.text.SimpleDateFormat("MMM dd, yyyy, hh:mm a", java.util.Locale.getDefault())
+        return dateFormat.format(date)
+    }
 
 }

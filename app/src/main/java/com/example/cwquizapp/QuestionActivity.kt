@@ -23,8 +23,8 @@ class QuestionActivity : AppCompatActivity() {
         val catTxt = findViewById<TextView>(R.id.cat_txt)
         catTxt.text = catName
 
-        val typeBtn = findViewById<Button>(R.id.type_btn)
-        val typeBtn2 = findViewById<Button>(R.id.type_btn2)
+        val trueFalseBtn = findViewById<Button>(R.id.true_false)
+        val MultiBtn = findViewById<Button>(R.id.multi)
 
         // Load the default fragment when the activity is first created
         if (savedInstanceState == null) {
@@ -32,13 +32,13 @@ class QuestionActivity : AppCompatActivity() {
         }
 
         // Handle button clicks to change the fragment
-        typeBtn.setOnClickListener {
+        trueFalseBtn.setOnClickListener {
             isMultiChoice = false
             Log.i("epdp", "clicked MULTI")
             loadFragment()  // Reload the fragment based on new state
         }
 
-        typeBtn2.setOnClickListener {
+        MultiBtn.setOnClickListener {
             isMultiChoice = true
             Log.i("epdp", "clicked TF")
             loadFragment()  // Reload the fragment based on new state

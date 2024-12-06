@@ -18,14 +18,15 @@
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MULTU"
-        android:id="@+id/type_btn">
+        android:text="T/F"
+        android:id="@+id/true_false">
     </com.google.android.material.button.MaterialButton>
+
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TF"
-        android:id="@+id/type_btn2">
+        android:text="MULTI"
+        android:id="@+id/multi">
     </com.google.android.material.button.MaterialButton>
 
     <LinearLayout
@@ -56,13 +57,16 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="150dp"
             android:text="@string/choice_txt" />
     </LinearLayout>
+
+    <!-- Use layout_weight to give the FrameLayout more flexible space -->
     <FrameLayout
         android:id="@+id/fragment_container_view_tag"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="0dp"
+        android:layout_weight="1" /> <!-- Added layout_weight to make it flexible in height -->
+
 </androidx.appcompat.widget.LinearLayoutCompat>
