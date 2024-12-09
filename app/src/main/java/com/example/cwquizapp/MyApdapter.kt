@@ -30,7 +30,7 @@ class MyApdapter(private val imageModelArrayList: MutableList<MyModel>, currentU
         // Set the click listener for each item
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
-            val intent = Intent(context, QuestonActivity::class.java)
+            val intent = Intent(context, QuestionActivity::class.java)
             intent.putExtra("item_name", info.getNames()) // Pass data to the new activity
 
             val databaseUser = FirebaseDatabase.getInstance()
