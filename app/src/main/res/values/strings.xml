@@ -21,4 +21,14 @@
     <string name="greeting_text">Hello! Please sign in or register below!\n</string>
     <string name="logged_in">Welcome %1$s\n</string>
 
+
+    <string name="sports_cat">Sports</string>
+    <string name="geography_cat">Geography</string>
+    <string name="food_cat">Food</string>
+    <string name="movies_cat">Movies</string>
+    <string name="history_cat">History</string>
+    <string name="science_cat">Science</string>
+    <string name="art_cat">Art</string>
+    <string name="music_cat">Music</string>
+
 </resources>

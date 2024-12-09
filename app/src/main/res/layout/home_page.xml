@@ -38,6 +38,7 @@
                 android:textColor="@color/PrimaryText" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/lastLoginTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="31/10/2024"
@@ -76,9 +77,10 @@
                 android:textColor="@color/PrimaryText" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/lastCatTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cars"
+                android:text="NO DATA"
                 android:textColor="@color/PrimaryText" />
         </LinearLayout>
 
