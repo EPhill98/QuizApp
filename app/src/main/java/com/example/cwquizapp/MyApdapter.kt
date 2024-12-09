@@ -8,16 +8,21 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.FirebaseDatabase
 
-class MyApdapter (private val imageModelArrayList: MutableList<MyModel>) : RecyclerView.Adapter<MyApdapter.ViewHolder>(){
+class MyApdapter(private val imageModelArrayList: MutableList<MyModel>, currentUserID: String) : RecyclerView.Adapter<MyApdapter.ViewHolder>(){
+
+    private val currentUserID = currentUserID
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyApdapter.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val myView = inflater.inflate(R.layout.list_row_layout, parent, false)
 
+
         return ViewHolder(myView)
     }
 
-    override fun onBindViewHolder(holder: MyApdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val info = imageModelArrayList[position]
         holder.imgView.setImageResource(info.getImages())
         holder.textMsg.text = info.getNames()
@@ -25,8 +30,26 @@ class MyApdapter (private val imageModelArrayList: MutableList<MyModel>) : Recyc
         // Set the click listener for each item
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
-            val intent = Intent(context, QuestionActivity::class.java) // Replace NewActivity with your target activity
+            val intent = Intent(context, QuestionActivity::class.java)
             intent.putExtra("item_name", info.getNames()) // Pass data to the new activity
+
+            val databaseUser = FirebaseDatabase.getInstance()
+            val userStatsRef = databaseUser.getReference("userStats").child(currentUserID)
+
+            // Only update if the category is different to prevent unnecessary writes
+            userStatsRef.child("lastCategory").get().addOnSuccessListener {
+                val lastCategory = it.getValue(String::class.java)
+                if (lastCategory != info.getNames()) {
+                    userStatsRef.child("lastCategory").setValue(info.getNames())
+                        .addOnSuccessListener {
+                            Log.i("MyApdapter", "Successfully updated lastCategory to ${info.getNames()}")
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.e("MyApdapter", "Error updating lastCategory: ${exception.localizedMessage}")
+                        }
+                }
+            }
+
             context.startActivity(intent)
             Log.i("epdp", "clicked CAT")
         }

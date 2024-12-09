@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var currentUser = myAuth.currentUser
 
     // Tag for logging
-    private val logCatTag = "MainActivity"
+    private val logCatTag = "MainActivity123"
 
     // Firebase Auth State Listener
     private lateinit var authStateListener: FirebaseAuth.AuthStateListener
@@ -178,6 +178,11 @@ class MainActivity : AppCompatActivity() {
         greetingSpace.text = currentUser?.email?.let {
             getString(R.string.logged_in, it)
         } ?: getString(R.string.greeting_text)
+        if (currentUser != null) {
+            nextBtn.visibility = View.VISIBLE
+        } else {
+            nextBtn.visibility = View.GONE
+        }
     }
 
     private fun closeKeyBoard() {

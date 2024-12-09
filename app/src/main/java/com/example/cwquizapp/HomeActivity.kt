@@ -1,6 +1,5 @@
 package com.example.cwquizapp
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -13,36 +12,40 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlin.collections.getValue
-
 
 class HomeActivity : AppCompatActivity() {
+
+    private lateinit var firebaseDatabase: FirebaseDatabase
+    private lateinit var currentUserID: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_page)
 
+        currentUserID = intent.getStringExtra("CURRENT_USER_ID").toString()
+
+        firebaseDatabase = FirebaseDatabase.getInstance()
+
         val root = findViewById<View>(android.R.id.content)
-        val currentUserID = intent.getStringExtra("CURRENT_USER_ID")
 
-        val database = FirebaseDatabase.getInstance()
-        val usersRef = database.getReference("users").child(currentUserID!!)
-
-        usersRef.child("email").addListenerForSingleValueEvent(object :
-            ValueEventListener {
+        // Fetch email and display welcome message
+        val usersRef: DatabaseReference = firebaseDatabase.getReference("users").child(currentUserID!!)
+        usersRef.child("email").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val userEmail = dataSnapshot.getValue(String::class.java)
-                // Use userEmail to display or perform other actions
                 val welcomeSnackbar = Snackbar.make(root, "WELCOME $userEmail", Snackbar.LENGTH_LONG)
                 welcomeSnackbar.show()
             }
+
             override fun onCancelled(error: DatabaseError) {
-                // Handle errors
                 Log.e("HomeActivity", "Error getting user email: ${error.message}")
             }
         })
 
+        // Fetch last login time
         usersRef.child("lastLogin").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val userLoginTime = dataSnapshot.getValue(Long::class.java)
@@ -61,23 +64,23 @@ class HomeActivity : AppCompatActivity() {
             }
         })
 
+
+
+
+
+        // Set up the toolbar
         val myToolbar: Toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(myToolbar)
 
+        // Populate the list and set up the RecyclerView
         val modelLst = popList()
-
         val recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view)
-        val layoutManager = LinearLayoutManager(this )
+        val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-
-        val myAdapter = MyApdapter(modelLst)
+        val myAdapter = MyApdapter(modelLst, currentUserID)
         recyclerView.adapter = myAdapter
 
-    }
-
-    private fun launchQScreen() {
-        val newIntent = Intent(this, QuestionActivity::class.java)
-        startActivity(newIntent)
+        // Update the UI with user stats
     }
 
     private fun popList(): ArrayList<MyModel> {
@@ -87,29 +90,69 @@ class HomeActivity : AppCompatActivity() {
             R.drawable.history_icon, R.drawable.science_icon, R.drawable.art_icon, R.drawable.music_icon
         )
         val myCatLst = arrayOf(
-            "Sports", "Geography", "Food", "Movies",
-            "History", "Science", "Art", "Music"
+            getString(R.string.sports_cat),
+            getString(R.string.geography_cat),
+            getString(R.string.food_cat),
+            getString(R.string.movies_cat),
+            getString(R.string.history_cat),
+            getString(R.string.science_cat),
+            getString(R.string.art_cat),
+            getString(R.string.music_cat)
         )
-        for (i in 0..7) {
+
+        for (i in myCatLst.indices) {
             val imgModel = MyModel()
-            imgModel.setNames((myCatLst[i]))
+            imgModel.setNames(myCatLst[i])
             imgModel.setImage(myIcons[i])
             lst.add(imgModel)
         }
-        lst.sortBy { lst -> lst.modelName}
+        lst.sortBy { it.modelName }
         return lst
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate((R.menu.toolbar_layout), menu)
+        menuInflater.inflate(R.menu.toolbar_layout, menu)
         return super.onCreateOptionsMenu(menu)
     }
-
 
     private fun formatTimestamp(timestamp: Long): String {
         val date = java.util.Date(timestamp)
         val dateFormat = java.text.SimpleDateFormat("MMM dd, yyyy, hh:mm a", java.util.Locale.getDefault())
         return dateFormat.format(date)
     }
+    // Helper function to fetch last category and update UI
+    private fun fetchAndDisplayLastCategory() {
+        val userStatsRef: DatabaseReference = firebaseDatabase.getReference("userStats").child(currentUserID!!)
+
+        userStatsRef.child("lastCategory").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val lastCategory = dataSnapshot.getValue(String::class.java) ?: "No category selected"
+                val lastCategoryTextView = findViewById<TextView>(R.id.lastCatTxt)
+                lastCategoryTextView.text = lastCategory
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("KYS154", "Error fetching lastCategory: ${error.message}")
+            }
+        })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("EPDP123", "in onStart")
+        // Fetch and display last category
+        fetchAndDisplayLastCategory()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Log.i("EPDP123", "in onResume")
+
+        // Fetch and display last category again on resume
+        fetchAndDisplayLastCategory()
+    }
+
+
 
 }
