@@ -31,7 +31,8 @@ class MyApdapter(private val imageModelArrayList: MutableList<MyModel>, currentU
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, QuestionActivity::class.java)
-            intent.putExtra("item_name", info.getNames()) // Pass data to the new activity
+            intent.putExtra("item_name", info.getNames())
+            intent.putExtra("cat_tag", info.getCatTag())
 
             val databaseUser = FirebaseDatabase.getInstance()
             val userStatsRef = databaseUser.getReference("userStats").child(currentUserID)

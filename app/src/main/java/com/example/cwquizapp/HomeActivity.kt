@@ -100,10 +100,22 @@ class HomeActivity : AppCompatActivity() {
             getString(R.string.music_cat)
         )
 
+        val myCatTagLst = arrayOf(
+            21,
+            22,
+            28,
+            11,
+            23,
+            18,
+            25,
+            12
+        )
+
         for (i in myCatLst.indices) {
             val imgModel = MyModel()
             imgModel.setNames(myCatLst[i])
             imgModel.setImage(myIcons[i])
+            imgModel.setCatTag(myCatTagLst[i])
             lst.add(imgModel)
         }
         lst.sortBy { it.modelName }
