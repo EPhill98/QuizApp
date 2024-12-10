@@ -1,20 +1,18 @@
 package com.example.cwquizapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
+import com.google.firebase.database.FirebaseDatabase
 import com.koushikdutta.ion.Ion
-import org.json.JSONObject
 import org.json.JSONArray
+import org.json.JSONObject
 
 class QuestionActivity : AppCompatActivity() {
-
-    private var isMultiChoice = true  // Fragment state variable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,40 +22,56 @@ class QuestionActivity : AppCompatActivity() {
         setSupportActionBar(myToolbar)
 
         val catName = intent.getStringExtra("item_name").toString()
-        val catTxt = findViewById<TextView>(R.id.cat_txt)
-        val catTag = intent.getIntExtra("cat_tag",0)
+        val catTag = intent.getIntExtra("cat_tag", 0)
 
+        val catTxt = findViewById<TextView>(R.id.cat_txt)
         catTxt.text = catName
 
-        val trueFalseBtn = findViewById<Button>(R.id.true_false)
-        val multiBtn = findViewById<Button>(R.id.multi)
+        // Fetch questions using Ion and save them in the questions list
+        fetchTriviaQuestions(catTag) { triviaQuestions ->
+            val database = FirebaseDatabase.getInstance()
+            val triviaQuestion = database.getReference("triviaQuestions")
+            triviaQuestion.removeValue().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("QuestionActivity", "Trivia questions removed successfully")
+                } else {
+                    Log.e(
+                        "QuestionActivity",
+                        "Error removing trivia questions: ${task.exception?.message}"
+                    )
+                }
+                if (triviaQuestions.isNotEmpty()) {
+                    val database = FirebaseDatabase.getInstance()
+                    val triviaQuestionsRef =
+                        database.getReference("triviaQuestions") // Create a reference to your trivia questions node
 
-        // Load the default fragment when the activity is first created
-        if (savedInstanceState == null) {
-            loadFragment()  // Load the default fragment based on isMultiChoice
+                    // Iterate through the trivia questions and add them to the database
+                    for (triviaQuestion in triviaQuestions) {
+                        val questionKey =
+                            triviaQuestionsRef.push().key // Generate a unique key for each question
+                        if (questionKey != null) {
+                            triviaQuestionsRef.child(questionKey)
+                                .setValue(triviaQuestion) // Add the question to the database
+                                .addOnSuccessListener {
+                                    Log.d("QuestionActivity", "Trivia question added successfully")
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.e(
+                                        "QuestionActivity",
+                                        "Error adding trivia question: ${exception.message}"
+                                    )
+                                }
+                        }
+                    }
+                }
+            }
         }
 
-        // Handle button clicks to change the fragment
-        trueFalseBtn.setOnClickListener {
-            isMultiChoice = false
-            Log.i("QuestionActivity", "Switched to True/False")
-            loadFragment()  // Reload the fragment based on new state
-        }
-
-        multiBtn.setOnClickListener {
-            isMultiChoice = true
-            Log.i("QuestionActivity", "Switched to Multiple Choice")
-            loadFragment()  // Reload the fragment based on new state
-        }
-
-        // Fetch questions using Ion
-        fetchTriviaQuestions(catTag)
     }
 
-    // Fetch trivia questions from the API
-    private fun fetchTriviaQuestions(catTag : Int) {
+    // Fetch trivia questions from the API and pass them back via a callback
+    private fun fetchTriviaQuestions(catTag: Int, callback: (List<TriviaQuestion>) -> Unit) {
         val url = "https://opentdb.com/api.php?amount=10&category=$catTag"
-
         Ion.with(this)
             .load(url)
             .asString()
@@ -65,48 +79,54 @@ class QuestionActivity : AppCompatActivity() {
                 if (e != null) {
                     e.printStackTrace()
                     Log.e("QuestionActivity", "Error fetching questions")
+                    callback(emptyList()) // If an error occurs, return an empty list
                     return@setCallback
                 }
-
                 try {
                     // Parse JSON Response
                     val json = JSONObject(result)
-                    val questions = json.getJSONArray("results")
+                    val questionsArray = json.getJSONArray("results")
+                    val questionsLst = mutableListOf<TriviaQuestion>()
 
-                    for (i in 0 until questions.length()) {
-                        val questionObj = questions.getJSONObject(i)
+                    for (i in 0 until questionsArray.length()) {
+                        val questionObj = questionsArray.getJSONObject(i)
                         val question = questionObj.getString("question")
                         val correctAnswer = questionObj.getString("correct_answer")
                         val incorrectAnswers = questionObj.getJSONArray("incorrect_answers")
+                        val questionType = questionObj.getString("type")
 
-                        // Log the question and answers
-                        Log.i("QuestionActivity", "Question: $question")
-                        Log.i("QuestionActivity", "Correct Answer: $correctAnswer")
-                        for (j in 0 until incorrectAnswers.length()) {
-                            Log.i("QuestionActivity", "Incorrect Answer: ${incorrectAnswers.getString(j)}")
-                        }
+                        // Convert JSONArray to List<String>
+                        val incorrectAnswersList = jsonArrayToList(incorrectAnswers)
+
+                        // Create TriviaQuestion object and add to list
+                        val triviaQuestion = TriviaQuestion(
+                            question = question,
+                            correctAnswer = correctAnswer,
+                            incorrectAnswers = incorrectAnswersList,
+                            questionType = questionType
+                        )
+                        questionsLst.add(triviaQuestion)
                     }
+
+                    callback(questionsLst)
+
                 } catch (ex: Exception) {
                     ex.printStackTrace()
                     Log.e("QuestionActivity", "Error parsing JSON")
+                    callback(emptyList()) // Return an empty list in case of JSON parsing error
                 }
             }
     }
 
-    // This method will load the correct fragment based on isMultiChoice
-    private fun loadFragment() {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-
-        val fragment: Fragment = if (isMultiChoice) {
-            MultiChoice()  // Show MultiChoice fragment
-        } else {
-            TrueFalse()  // Show TrueFalse fragment
+    // Helper function to convert JSONArray to List<String>
+    private fun jsonArrayToList(jsonArray: JSONArray): List<String> {
+        val list = mutableListOf<String>()
+        for (i in 0 until jsonArray.length()) {
+            list.add(jsonArray.getString(i))
         }
-
-        // Replace the fragment in the container
-        fragmentTransaction.replace(R.id.fragment_container_view_tag, fragment)
-        fragmentTransaction.commit()  // Commit the transaction
+        return list
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_layout, menu)
