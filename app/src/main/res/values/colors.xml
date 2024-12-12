@@ -10,4 +10,8 @@
     <color name="PrimaryText">#212121</color>
     <color name="SecondayText">#757575</color>
     <color name="DividerColor">#BDBDBD</color>
+    <color name="CorrectAnswerColor">#008000</color>
+    <color name="IncorrectAnswerColor">#FF0000</color>
+    <color name="DefaultButtonColor">#607D8B</color>
+    DefaultButtonColor
 </resources>

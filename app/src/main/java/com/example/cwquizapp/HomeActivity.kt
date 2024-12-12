@@ -118,7 +118,7 @@ class HomeActivity : AppCompatActivity() {
             imgModel.setCatTag(myCatTagLst[i])
             lst.add(imgModel)
         }
-        lst.sortBy { it.modelName }
+        lst.sortBy { it.modelCatTag }
         return lst
     }
 

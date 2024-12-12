@@ -1,18 +1,27 @@
 package com.example.cwquizapp
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.widget.TextView
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.koushikdutta.ion.Ion
 import org.json.JSONArray
 import org.json.JSONObject
 
 class QuestionActivity : AppCompatActivity() {
+
+    private val questionsList = mutableListOf<TriviaQuestion>()
+    private var currentQuestionIndex = 0
+    private var correctAnswers = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,49 +36,91 @@ class QuestionActivity : AppCompatActivity() {
         val catTxt = findViewById<TextView>(R.id.cat_txt)
         catTxt.text = catName
 
-        // Fetch questions using Ion and save them in the questions list
-        fetchTriviaQuestions(catTag) { triviaQuestions ->
-            val database = FirebaseDatabase.getInstance()
-            val triviaQuestion = database.getReference("triviaQuestions")
-            triviaQuestion.removeValue().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("QuestionActivity", "Trivia questions removed successfully")
-                } else {
-                    Log.e(
-                        "QuestionActivity",
-                        "Error removing trivia questions: ${task.exception?.message}"
-                    )
-                }
-                if (triviaQuestions.isNotEmpty()) {
-                    val database = FirebaseDatabase.getInstance()
-                    val triviaQuestionsRef =
-                        database.getReference("triviaQuestions") // Create a reference to your trivia questions node
+        val choiceTxt = findViewById<TextView>(R.id.choice_txt)
 
-                    // Iterate through the trivia questions and add them to the database
-                    for (triviaQuestion in triviaQuestions) {
-                        val questionKey =
-                            triviaQuestionsRef.push().key // Generate a unique key for each question
-                        if (questionKey != null) {
-                            triviaQuestionsRef.child(questionKey)
-                                .setValue(triviaQuestion) // Add the question to the database
-                                .addOnSuccessListener {
-                                    Log.d("QuestionActivity", "Trivia question added successfully")
-                                }
-                                .addOnFailureListener { exception ->
-                                    Log.e(
-                                        "QuestionActivity",
-                                        "Error adding trivia question: ${exception.message}"
-                                    )
-                                }
-                        }
-                    }
-                }
+        val btn1 = findViewById<Button>(R.id.user_choice1)
+        val btn2 = findViewById<Button>(R.id.user_choice2)
+        val btn3 = findViewById<Button>(R.id.user_choice3)
+        val btn4 = findViewById<Button>(R.id.user_choice4)
+        val nextButton: Button = findViewById(R.id.next_button)
+
+        val buttons = listOf(btn1, btn2, btn3, btn4)
+
+        buttons.forEach { it.visibility = View.GONE }
+
+        fetchTriviaQuestions(catTag) { triviaQuestions ->
+            if (triviaQuestions.isNotEmpty()) {
+                questionsList.clear()
+                questionsList.addAll(triviaQuestions)
+                currentQuestionIndex = 0
+                correctAnswers = 0
+                showQuestion(questionsList[currentQuestionIndex])
+            } else {
+                Log.e("QuestionActivity", "No questions fetched")
             }
         }
 
+        nextButton.setOnClickListener {
+            if (currentQuestionIndex < questionsList.size - 1) {
+                currentQuestionIndex++
+                nextButton.visibility = View.GONE
+                buttons.forEach { it.setBackgroundColor(ContextCompat.getColor(this, R.color.DefaultButtonColor)) }
+                choiceTxt.text = getString(R.string.choice_txt)
+                showQuestion(questionsList[currentQuestionIndex])
+            } else {
+                choiceTxt.text = "End of questions. Your score is $correctAnswers out of ${questionsList.size}"
+                Log.d("QuestionActivity", "End of questions")
+            }
+        }
+
+        buttons.forEachIndexed { index, button ->
+            nextButton.visibility = View.GONE
+            choiceTxt.text = getString(R.string.choice_txt)
+            button.setOnClickListener {
+                val selectedAnswer = button.text.toString()
+                if (selectedAnswer == questionsList[currentQuestionIndex].correctAnswer) {
+                    correctAnswers++
+                    button.setBackgroundColor(ContextCompat.getColor(this, R.color.CorrectAnswerColor))
+                    choiceTxt.text = "Correct"
+                } else {
+                    button.setBackgroundColor(ContextCompat.getColor(this, R.color.IncorrectAnswerColor))
+                    choiceTxt.text = "Incorrect"
+                }
+
+                nextButton.visibility = View.VISIBLE
+                buttons.forEach { it.visibility = View.GONE }
+            }
+            choiceTxt.text = getString(R.string.next_start)
+        }
     }
 
-    // Fetch trivia questions from the API and pass them back via a callback
+    private fun showQuestion(question: TriviaQuestion) {
+        val questionTxt = findViewById<TextView>(R.id.question_txt)
+        questionTxt.text = question.question
+
+        val btn1 = findViewById<Button>(R.id.user_choice1)
+        val btn2 = findViewById<Button>(R.id.user_choice2)
+        val btn3 = findViewById<Button>(R.id.user_choice3)
+        val btn4 = findViewById<Button>(R.id.user_choice4)
+
+        val buttons = listOf(btn1, btn2, btn3, btn4)
+
+        val answers = mutableListOf<String>().apply {
+            addAll(question.incorrectAnswers ?: emptyList())
+            question.correctAnswer?.let { add(it) }
+            shuffle()
+        }
+
+        buttons.forEachIndexed { index, button ->
+            if (index < answers.size) {
+                button.text = answers[index]
+                button.visibility = View.VISIBLE
+            } else {
+                button.visibility = View.GONE
+            }
+        }
+    }
+
     private fun fetchTriviaQuestions(catTag: Int, callback: (List<TriviaQuestion>) -> Unit) {
         val url = "https://opentdb.com/api.php?amount=10&category=$catTag"
         Ion.with(this)
@@ -79,11 +130,10 @@ class QuestionActivity : AppCompatActivity() {
                 if (e != null) {
                     e.printStackTrace()
                     Log.e("QuestionActivity", "Error fetching questions")
-                    callback(emptyList()) // If an error occurs, return an empty list
+                    callback(emptyList())
                     return@setCallback
                 }
                 try {
-                    // Parse JSON Response
                     val json = JSONObject(result)
                     val questionsArray = json.getJSONArray("results")
                     val questionsLst = mutableListOf<TriviaQuestion>()
@@ -95,10 +145,8 @@ class QuestionActivity : AppCompatActivity() {
                         val incorrectAnswers = questionObj.getJSONArray("incorrect_answers")
                         val questionType = questionObj.getString("type")
 
-                        // Convert JSONArray to List<String>
                         val incorrectAnswersList = jsonArrayToList(incorrectAnswers)
 
-                        // Create TriviaQuestion object and add to list
                         val triviaQuestion = TriviaQuestion(
                             question = question,
                             correctAnswer = correctAnswer,
@@ -107,18 +155,15 @@ class QuestionActivity : AppCompatActivity() {
                         )
                         questionsLst.add(triviaQuestion)
                     }
-
                     callback(questionsLst)
-
                 } catch (ex: Exception) {
                     ex.printStackTrace()
                     Log.e("QuestionActivity", "Error parsing JSON")
-                    callback(emptyList()) // Return an empty list in case of JSON parsing error
+                    callback(emptyList())
                 }
             }
     }
 
-    // Helper function to convert JSONArray to List<String>
     private fun jsonArrayToList(jsonArray: JSONArray): List<String> {
         val list = mutableListOf<String>()
         for (i in 0 until jsonArray.length()) {
@@ -126,7 +171,6 @@ class QuestionActivity : AppCompatActivity() {
         }
         return list
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_layout, menu)

@@ -8,10 +8,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 data class TriviaQuestion(
-    val question: String,
-    val correctAnswer: String,
-    val incorrectAnswers: List<String>,
-    val questionType: String
+    val question: String? = null,
+    val correctAnswer: String? = null,
+    val incorrectAnswers: List<String>? = null,
+    val questionType: String? = null
 )
 
 private fun fetchTriviaQuestions(
