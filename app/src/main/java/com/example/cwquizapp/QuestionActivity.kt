@@ -9,10 +9,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.koushikdutta.ion.Ion
 import org.json.JSONArray
 import org.json.JSONObject
@@ -32,6 +29,7 @@ class QuestionActivity : AppCompatActivity() {
 
         val catName = intent.getStringExtra("item_name").toString()
         val catTag = intent.getIntExtra("cat_tag", 0)
+        val userId = intent.getStringExtra("user_id").toString()
 
         val catTxt = findViewById<TextView>(R.id.cat_txt)
         catTxt.text = catName
@@ -64,12 +62,51 @@ class QuestionActivity : AppCompatActivity() {
             if (currentQuestionIndex < questionsList.size - 1) {
                 currentQuestionIndex++
                 nextButton.visibility = View.GONE
-                buttons.forEach { it.setBackgroundColor(ContextCompat.getColor(this, R.color.DefaultButtonColor)) }
+                buttons.forEach {
+                    it.setBackgroundColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.DefaultButtonColor
+                        )
+                    )
+                }
                 choiceTxt.text = getString(R.string.choice_txt)
                 showQuestion(questionsList[currentQuestionIndex])
             } else {
-                choiceTxt.text = "End of questions. Your score is $correctAnswers out of ${questionsList.size}"
+                choiceTxt.text =
+                    "End of questions. Your score is $correctAnswers out of ${questionsList.size}"
                 Log.d("QuestionActivity", "End of questions")
+                nextButton.visibility = View.GONE
+
+
+                val userStats = FirebaseDatabase.getInstance().getReference("userStats")
+                val userRef = userStats.child(userId)
+
+                // Fetch the current values for "correctAnswers" and the specific category
+                userRef.get().addOnSuccessListener { dataSnapshot ->
+                    val currentCorrectAnswers = dataSnapshot.child("correctAnswers").getValue(Int::class.java) ?: 0
+                    val currentCatAnswers = dataSnapshot.child(catName).getValue(Int::class.java) ?: 0
+                    val totalQuestionsAttempted = dataSnapshot.child("totalQuestions").getValue(Int::class.java) ?: 0
+
+                    // Update "lastCategory", "correctAnswers", and category-specific answers
+                    val updates = mapOf(
+                        "lastCategory" to catName,
+                        "correctAnswers" to (correctAnswers + currentCorrectAnswers),
+                        catName to (correctAnswers + currentCatAnswers),
+                        "totalQuestions" to (questionsList.size + totalQuestionsAttempted)
+                    )
+
+                    userRef.updateChildren(updates)
+                        .addOnSuccessListener {
+                            Log.d("Firebase", "Data successfully updated")
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.e("Firebase", "Failed to update data", exception)
+                        }
+                }.addOnFailureListener { exception ->
+                    Log.e("Firebase", "Failed to fetch data", exception)
+                }
+
             }
         }
 
@@ -80,17 +117,13 @@ class QuestionActivity : AppCompatActivity() {
                 val selectedAnswer = button.text.toString()
                 if (selectedAnswer == questionsList[currentQuestionIndex].correctAnswer) {
                     correctAnswers++
-                    button.setBackgroundColor(ContextCompat.getColor(this, R.color.CorrectAnswerColor))
                     choiceTxt.text = "Correct"
                 } else {
-                    button.setBackgroundColor(ContextCompat.getColor(this, R.color.IncorrectAnswerColor))
                     choiceTxt.text = "Incorrect"
                 }
-
                 nextButton.visibility = View.VISIBLE
                 buttons.forEach { it.visibility = View.GONE }
             }
-            choiceTxt.text = getString(R.string.next_start)
         }
     }
 

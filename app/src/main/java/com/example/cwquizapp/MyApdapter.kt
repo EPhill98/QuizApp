@@ -33,6 +33,7 @@ class MyApdapter(private val imageModelArrayList: MutableList<MyModel>, currentU
             val intent = Intent(context, QuestionActivity::class.java)
             intent.putExtra("item_name", info.getNames())
             intent.putExtra("cat_tag", info.getCatTag())
+            intent.putExtra("user_id", currentUserID)
 
             val databaseUser = FirebaseDatabase.getInstance()
             val userStatsRef = databaseUser.getReference("userStats").child(currentUserID)

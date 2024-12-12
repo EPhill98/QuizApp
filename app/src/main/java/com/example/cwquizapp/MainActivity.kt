@@ -158,18 +158,22 @@ class MainActivity : AppCompatActivity() {
     private fun saveUserDataToDatabase() {
         val userId = currentUser?.uid ?: return
         val usersRef = FirebaseDatabase.getInstance().getReference("users")
-        val userData = mapOf(
-            "lastLogin" to ServerValue.TIMESTAMP,
-            "email" to currentUser?.email
-        )
+        usersRef.get().addOnSuccessListener { dataSnapshot ->
+            val oldLoginTime = dataSnapshot.child(userId).child("newLogin").getValue(Long::class.java)
+            val userData = mapOf(
+                "newLogin" to ServerValue.TIMESTAMP,
+                "email" to currentUser?.email,
+                "oldLogin" to oldLoginTime
+            )
 
-        usersRef.child(userId).setValue(userData)
-            .addOnSuccessListener {
-                Log.i(logCatTag, "User data updated successfully")
-            }
-            .addOnFailureListener { exception ->
-                Log.e(logCatTag, "Error updating user data: ${exception.localizedMessage}")
-            }
+            usersRef.child(userId).setValue(userData)
+                .addOnSuccessListener {
+                    Log.i(logCatTag, "User data updated successfully")
+                }
+                .addOnFailureListener { exception ->
+                    Log.e(logCatTag, "Error updating user data: ${exception.localizedMessage}")
+                }
+        }
     }
 
     private fun update() {

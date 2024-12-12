@@ -46,9 +46,8 @@ class HomeActivity : AppCompatActivity() {
         })
 
         // Fetch last login time
-        usersRef.child("lastLogin").addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val userLoginTime = dataSnapshot.getValue(Long::class.java)
+        usersRef.get().addOnSuccessListener { dataSnapshot ->
+                val userLoginTime = dataSnapshot.child("oldLogin").getValue(Long::class.java)
                 val lastLoginTimeTXT = findViewById<TextView>(R.id.lastLoginTxt)
 
                 if (userLoginTime != null) {
@@ -58,11 +57,6 @@ class HomeActivity : AppCompatActivity() {
                     lastLoginTimeTXT.text = "Unknown"
                 }
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeActivity", "Error posting time: ${error.message}")
-            }
-        })
 
 
 
