@@ -3,6 +3,7 @@ package com.example.cwquizapp
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Button
@@ -30,6 +31,7 @@ class QuestionActivity : AppCompatActivity() {
         val catName = intent.getStringExtra("item_name").toString()
         val catTag = intent.getIntExtra("cat_tag", 0)
         val userId = intent.getStringExtra("user_id").toString()
+        val questionNum = intent.getIntExtra("questionNum", 1)
 
         val catTxt = findViewById<TextView>(R.id.cat_txt)
         catTxt.text = catName
@@ -46,7 +48,7 @@ class QuestionActivity : AppCompatActivity() {
 
         buttons.forEach { it.visibility = View.GONE }
 
-        fetchTriviaQuestions(catTag) { triviaQuestions ->
+        fetchTriviaQuestions(catTag, questionNum) { triviaQuestions ->
             if (triviaQuestions.isNotEmpty()) {
                 questionsList.clear()
                 questionsList.addAll(triviaQuestions)
@@ -121,6 +123,15 @@ class QuestionActivity : AppCompatActivity() {
                 } else {
                     choiceTxt.text = "Incorrect"
                 }
+                val userQuestionHistory = FirebaseDatabase.getInstance().getReference("userQuestionHistory")
+                val userQuestHistoryRef = userQuestionHistory.child(userId)
+                val updateQuestionHistory = mapOf(
+                    "question" to questionsList[currentQuestionIndex].question,
+                    "answer" to selectedAnswer,
+                    "correctAnswer" to questionsList[currentQuestionIndex].correctAnswer
+                )
+                userQuestHistoryRef.push().setValue(updateQuestionHistory)
+
                 nextButton.visibility = View.VISIBLE
                 buttons.forEach { it.visibility = View.GONE }
             }
@@ -154,8 +165,8 @@ class QuestionActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchTriviaQuestions(catTag: Int, callback: (List<TriviaQuestion>) -> Unit) {
-        val url = "https://opentdb.com/api.php?amount=10&category=$catTag"
+    private fun fetchTriviaQuestions(catTag: Int, questionNum: Int, callback: (List<TriviaQuestion>) -> Unit) {
+        val url = "https://opentdb.com/api.php?amount=$questionNum&category=$catTag"
         Ion.with(this)
             .load(url)
             .asString()
@@ -208,5 +219,16 @@ class QuestionActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_layout, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val myView = findViewById<View>(R.id.main_toolbar)
+        when (item.itemId) {
+            R.id.home_icon -> {
+                finish()
+                return true
+            }
+        }
+        return true
     }
 }

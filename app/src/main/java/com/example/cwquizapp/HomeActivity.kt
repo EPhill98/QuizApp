@@ -1,8 +1,10 @@
 package com.example.cwquizapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -157,6 +159,19 @@ class HomeActivity : AppCompatActivity() {
 
         // Fetch and display last category again on resume
         fetchAndDisplayLastCategory()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val myView = findViewById<View>(R.id.main_toolbar)
+        when (item.itemId) {
+            R.id.settings_icon -> {
+                val newIntent = Intent(this, SettingActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 

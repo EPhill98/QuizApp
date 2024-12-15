@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -199,5 +200,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun displayMsg(view: View, msgTxt: String) {
         Snackbar.make(view, msgTxt, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val myView = findViewById<View>(R.id.main_toolbar)
+        when (item.itemId) {
+            R.id.settings_icon -> {
+                val newIntent = Intent(this, SettingActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUser?.uid)
+                startActivity(newIntent)
+                return true
+            }
+        }
+        return true
     }
 }
