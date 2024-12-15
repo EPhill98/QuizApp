@@ -37,11 +37,6 @@ class MyApdapter(private val imageModelArrayList: MutableList<MyModel>, currentU
 
             val databaseUser = FirebaseDatabase.getInstance()
             val userStatsRef = databaseUser.getReference("userStats").child(currentUserID)
-            val userSettingsRef = databaseUser.getReference("userSettings").child(currentUserID)
-            userSettingsRef.child("questionNumber").get().addOnSuccessListener {
-                val questionNum = it.getValue(Int::class.java)
-                intent.putExtra("questionNum", questionNum)
-            }
 
             // Only update if the category is different to prevent unnecessary writes
             userStatsRef.child("lastCategory").get().addOnSuccessListener {
