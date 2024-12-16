@@ -31,6 +31,9 @@
         <activity android:name=".SettingActivity"
             android:parentActivityName=".HomeActivity">
         </activity>
+        <activity android:name=".UserStatsActivity"
+            android:parentActivityName=".HomeActivity">
+        </activity>
     </application>
 
 </manifest>

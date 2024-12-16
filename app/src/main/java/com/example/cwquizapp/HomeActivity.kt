@@ -170,6 +170,12 @@ class HomeActivity : AppCompatActivity() {
                 startActivity(newIntent)
                 return true
             }
+            R.id.stats -> {
+                val newIntent = Intent(this, UserStatsActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
