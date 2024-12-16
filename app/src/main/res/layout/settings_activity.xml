@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/DarkPrimaryColor"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/main_toolbar"
@@ -16,7 +17,7 @@
     <!-- Add your child views here -->
     <EditText
         android:id="@+id/numberInput"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:hint="Enter a number"
         android:inputType="number"
@@ -25,7 +26,7 @@
 
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/question_type_group"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         app:singleSelection="true">
@@ -60,7 +61,7 @@
     </com.google.android.material.button.MaterialButtonToggleGroup>
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/question_difficulty_group"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         app:singleSelection="true">
@@ -96,8 +97,9 @@
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/AccentColor"
         android:text="UPDATE"
         android:layout_marginTop="50dp"/>
 
