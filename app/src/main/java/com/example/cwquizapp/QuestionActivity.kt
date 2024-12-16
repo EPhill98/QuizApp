@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 
 class QuestionActivity : AppCompatActivity() {
 
+    //Hello this is a test
+
     private var isMultiChoice = true  // Keep the fragment state variable
 
     override fun onCreate(savedInstanceState: Bundle?) {
