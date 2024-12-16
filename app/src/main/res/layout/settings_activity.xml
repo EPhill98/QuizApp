@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/DarkPrimaryColor"
     android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/main_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/DarkPrimaryColor">
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <!-- Add your child views here -->
     <EditText
@@ -11,12 +19,86 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter a number"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:layout_marginTop="100dp"/>
+
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/question_type_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/true_false_choice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="True Or False"
+            style="?attr/materialButtonOutlinedStyle"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/any_choice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ANY"
+            style="?attr/materialButtonOutlinedStyle"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/multiple_choice_choice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Multiple Choice"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_margin="5dp" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/question_difficulty_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/easy_q_choice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="EASY"
+            style="?attr/materialButtonOutlinedStyle"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mediumn_q_choice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="MEDIUM"
+            style="?attr/materialButtonOutlinedStyle"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/hard_q_choice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="HARD"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_margin="5dp" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="UPDATE" />
+        android:text="UPDATE"
+        android:layout_marginTop="50dp"/>
 
 </LinearLayout>

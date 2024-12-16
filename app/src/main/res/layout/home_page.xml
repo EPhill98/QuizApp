@@ -10,7 +10,7 @@
         android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/LightPrimaryColor">
+        android:background="@color/DarkPrimaryColor">
     </com.google.android.material.appbar.MaterialToolbar>
 
     <!-- Last login info box -->

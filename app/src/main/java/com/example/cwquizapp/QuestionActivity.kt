@@ -79,7 +79,6 @@ class QuestionActivity : AppCompatActivity() {
                 Log.d("QuestionActivity", "End of questions")
                 nextButton.visibility = View.GONE
 
-
                 val userStats = FirebaseDatabase.getInstance().getReference("userStats")
                 val userRef = userStats.child(userId)
 
@@ -110,7 +109,6 @@ class QuestionActivity : AppCompatActivity() {
                 }.addOnFailureListener { exception ->
                     Log.e("Firebase", "Failed to fetch data", exception)
                 }
-
             }
         }
 
@@ -175,51 +173,61 @@ class QuestionActivity : AppCompatActivity() {
     ) {
         val firebaseDatabase = FirebaseDatabase.getInstance()
         val settingsRef = firebaseDatabase.getReference("userSettings").child(userId)
-        settingsRef.child("questionNumber").get().addOnSuccessListener { dataSnapshot ->
-            val questionNum = dataSnapshot.getValue(Int::class.java)
-            val url = "https://opentdb.com/api.php?amount=$questionNum&category=$catTag"
+        settingsRef.get().addOnSuccessListener { dataSnapshot ->
+            val questionNum = dataSnapshot.child("questionNumber").getValue(Int::class.java) ?: 10 // Default to 10 if null
+            val questionType = dataSnapshot.child("questionType").getValue(String::class.java)
+            val questionDifficulty = dataSnapshot.child("questionDifficulty").getValue(String::class.java) ?: "medium"
+            val url: String
+            if (questionType != "any") {
+                url = "https://opentdb.com/api.php?amount=$questionNum&category=$catTag&difficulty=$questionDifficulty&type=$questionType"
+            } else {
+                url = "https://opentdb.com/api.php?amount=$questionNum&category=$catTag&difficulty=$questionDifficulty"
+            }
             Log.i("EPDP123", url)
-            Ion.with(this)
-                .load(url)
-                .asString()
-                .setCallback { e, result ->
-                    if (e != null) {
-                        e.printStackTrace()
-                        Log.e("QuestionActivity", "Error fetching questions")
-                        callback(emptyList())
-                        return@setCallback
-                    }
-                    try {
-                        val json = JSONObject(result)
-                        val questionsArray = json.getJSONArray("results")
-                        val questionsLst = mutableListOf<TriviaQuestion>()
-
-                        for (i in 0 until questionsArray.length()) {
-                            val questionObj = questionsArray.getJSONObject(i)
-                            val question = questionObj.getString("question")
-                            val correctAnswer = questionObj.getString("correct_answer")
-                            val incorrectAnswers = questionObj.getJSONArray("incorrect_answers")
-                            val questionType = questionObj.getString("type")
-
-                            val incorrectAnswersList = jsonArrayToList(incorrectAnswers)
-
-                            val triviaQuestion = TriviaQuestion(
-                                question = question,
-                                correctAnswer = correctAnswer,
-                                incorrectAnswers = incorrectAnswersList,
-                                questionType = questionType
-                            )
-                            questionsLst.add(triviaQuestion)
-                        }
-                        callback(questionsLst)
-                    } catch (ex: Exception) {
-                        ex.printStackTrace()
-                        Log.e("QuestionActivity", "Error parsing JSON")
-                        callback(emptyList())
-                    }
-                }
-
+            fetchQuestionsFromApi(url, callback)
         }
+    }
+
+    private fun fetchQuestionsFromApi(url: String, callback: (List<TriviaQuestion>) -> Unit) {
+        Ion.with(this)
+            .load(url)
+            .asString()
+            .setCallback { e, result ->
+                if (e != null) {
+                    e.printStackTrace()
+                    Log.e("QuestionActivity", "Error fetching questions")
+                    callback(emptyList())
+                    return@setCallback
+                }
+                try {
+                    val json = JSONObject(result)
+                    val questionsArray = json.getJSONArray("results")
+                    val questionsLst = mutableListOf<TriviaQuestion>()
+
+                    for (i in 0 until questionsArray.length()) {
+                        val questionObj = questionsArray.getJSONObject(i)
+                        val question = questionObj.getString("question")
+                        val correctAnswer = questionObj.getString("correct_answer")
+                        val incorrectAnswers = questionObj.getJSONArray("incorrect_answers")
+                        val questionType = questionObj.getString("type")
+
+                        val incorrectAnswersList = jsonArrayToList(incorrectAnswers)
+
+                        val triviaQuestion = TriviaQuestion(
+                            question = question,
+                            correctAnswer = correctAnswer,
+                            incorrectAnswers = incorrectAnswersList,
+                            questionType = questionType
+                        )
+                        questionsLst.add(triviaQuestion)
+                    }
+                    callback(questionsLst)
+                } catch (ex: Exception) {
+                    ex.printStackTrace()
+                    Log.e("QuestionActivity", "Error parsing JSON")
+                    callback(emptyList())
+                }
+            }
     }
 
     private fun jsonArrayToList(jsonArray: JSONArray): List<String> {
