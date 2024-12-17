@@ -24,6 +24,22 @@
     <string name="logged_in">Welcome %1$s\n</string>
 
 
+    <string name="last_login">Last Login: </string>
+    <string name="current_streak">Current Streak: </string>
+    <string name="last_category">Last Category: </string>
+    <string name="no_data">No Data</string>
+
+
+    <string name="toolbar_title">Update Question</string>
+    <string name="enter_number_hint">Enter a number</string>
+    <string name="true_or_false">True/False</string>
+    <string name="any_choice">ANY</string>
+    <string name="multiple_choice">Multiple</string>
+    <string name="easy">EASY</string>
+    <string name="medium">MEDIUM</string>
+    <string name="hard">HARD</string>
+    <string name="update_button">UPDATE</string>
+
     <string name="sports_cat">Sports</string>
     <string name="geography_cat">Geography</string>
     <string name="food_cat">Food</string>

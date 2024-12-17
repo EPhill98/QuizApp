@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -10,107 +11,123 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.google.android.material.textview.MaterialTextView
-        style="@style/TextAppearance.Material3.TitleLarge"
+    <!-- Welcome Card -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:background="@drawable/rounded_mat_text_view"
-        android:padding="15dp"
-        android:text="@string/welcome_text"
+        app:cardCornerRadius="8dp"
+        app:cardBackgroundColor="@color/PrimaryColor"
+        app:cardElevation="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/TextAppearance.Material3.TitleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:text="@string/welcome_text"
+            android:textColor="@color/TextIcons" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Greeting Text -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/greetingSpace"
+        style="@style/TextAppearance.Material3.BodyMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/greeting_text"
         android:textColor="@color/TextIcons" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:id="@+id/greetingSpace"
-        android:text="@string/greeting_text"
-        android:textColor="@color/TextIcons"
-        />
-
+    <!-- Input Prompt -->
     <com.google.android.material.textview.MaterialTextView
         style="@style/TextAppearance.Material3.BodyLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:background="@color/PrimaryColor"
-        android:padding="10dp"
+        android:layout_marginTop="50dp"
         android:text="@string/enter_user_details"
         android:textColor="@color/TextIcons" />
 
+    <!-- Name Input -->
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="200dp"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:hint="@string/hint_name"
-        app:boxStrokeWidth="2dp">
+        android:layout_marginTop="16dp"
+        app:boxStrokeColor="@color/AccentColor"
+        app:hintTextColor="@color/AccentColor"
+        android:hint="@string/hint_name">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/AccentColor" />
+            app:hintTextColor="@color/SecondayText"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Password Input -->
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="200dp"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:hint="@string/hint_password"
-        app:boxStrokeWidth="2dp">
+        android:layout_marginTop="16dp"
+        app:boxStrokeColor="@color/AccentColor"
+        app:hintTextColor="@color/SecondayText"
+        android:hint="@string/hint_password">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:inputType="textPassword"
-            android:textColor="@color/AccentColor" />
+            android:textColor="@color/TextIcons" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Register Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/AccentColor"
+        android:layout_marginTop="50dp"
         android:text="@string/reg_button"
         android:textColor="@color/PrimaryText"
-        android:layout_marginTop="50dp"/>
+        android:backgroundTint="@color/AccentColor"/>
 
+    <!-- Logout and Login Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        >
+        android:gravity="center"
+        android:layout_marginTop="16dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logoutBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/AccentColor"
             android:text="@string/logout_button"
-            android:textColor="@color/PrimaryText" />
+            android:textColor="@color/PrimaryText"
+            android:backgroundTint="@color/AccentColor"
+            />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/loginBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:backgroundTint="@color/AccentColor"
+            android:layout_marginStart="50dp"
             android:text="@string/login_button"
-            android:textColor="@color/PrimaryText" />
+            android:textColor="@color/PrimaryText"
+            android:backgroundTint="@color/AccentColor"/>
     </LinearLayout>
 
+    <!-- Next Screen Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/nextScreenBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/AccentColor"
+        android:layout_marginTop="16dp"
         android:text="@string/next_button"
-        android:textColor="@color/PrimaryText"/>
-
+        android:backgroundTint="@color/AccentColor"
+        android:textColor="@color/PrimaryText" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

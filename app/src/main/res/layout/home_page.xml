@@ -1,101 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/DarkPrimaryColor"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
+    <!-- App Bar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/DarkPrimaryColor">
-    </com.google.android.material.appbar.MaterialToolbar>
+        android:background="@color/PrimaryColor"
+        android:elevation="4dp"
+        app:title="@string/app_name"
+        app:titleTextColor="@color/TextIcons" />
 
-    <!-- Last login info box -->
-    <LinearLayout
+    <!-- Last Login Info Card -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="25dp"
-        android:background="@drawable/rounded_mat_text_view"
-        android:orientation="vertical"
-        android:padding="20dp">
+        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="@color/PrimaryColor"
+        app:cardElevation="4dp">
 
-
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <com.google.android.material.textview.MaterialTextView
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="Last Log In: "
-                android:textColor="@color/PrimaryText" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/lastLoginTxt"
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/last_login"
+                    android:textColor="@color/TextIcons"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/lastLoginTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="31/10/2024"
+                    android:textColor="@color/TextIcons" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="31/10/2024"
-                android:textColor="@color/PrimaryText" />
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/current_streak"
+                    android:textColor="@color/TextIcons"
+                    android:textStyle="bold" />
 
-            <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10"
+                    android:textColor="@color/TextIcons" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="Current Streak: "
-                android:textColor="@color/PrimaryText" />
+                android:orientation="horizontal">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10"
-                android:textColor="@color/PrimaryText" />
-        </LinearLayout>
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/last_category"
+                    android:textColor="@color/TextIcons"
+                    android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/lastCatTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_data"
+                    android:textColor="@color/TextIcons" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="Last Category: "
-                android:textColor="@color/PrimaryText" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/lastCatTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="NO DATA"
-                android:textColor="@color/PrimaryText" />
-        </LinearLayout>
-
-    </LinearLayout>
-    <!-- Last login info box end -->
-
+    <!-- Divider -->
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/AccentColor" />
+        android:background="@color/AccentColor"
+        android:layout_marginBottom="8dp" />
 
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:scrollbars="vertical" />
-</LinearLayout>
+        android:scrollbars="vertical"
+        android:background="@color/DarkPrimaryColor" />
+</androidx.appcompat.widget.LinearLayoutCompat>

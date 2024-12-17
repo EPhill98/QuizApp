@@ -5,9 +5,8 @@
     android:padding="6dp"
     android:clickable="true"
     android:focusable="true"
-    android:background="@color/LightPrimaryColor"
-    android:layout_margin="5dp"
-    >
+    android:background="@color/DarkPrimaryColor"
+    android:layout_margin="5dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
@@ -25,7 +24,6 @@
         android:layout_toEndOf="@id/icon"
         android:layout_centerVertical="true"
         android:textSize="22sp"
-        android:textColor="@color/SecondayText"
-        android:gravity="center"
-        />
+        android:textColor="@color/TextIcons"
+        android:gravity="center" />
 </RelativeLayout>

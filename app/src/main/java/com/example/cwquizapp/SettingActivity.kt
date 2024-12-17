@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +15,7 @@ import com.google.firebase.database.FirebaseDatabase
 
 class SettingActivity : AppCompatActivity() {
 
-    private lateinit var userID: String // Declare userID as a class member
+    private lateinit var currentUserID: String // Declare userID as a class member
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +25,7 @@ class SettingActivity : AppCompatActivity() {
         setSupportActionBar(myToolbar)
 
         // Get user ID passed from previous activity
-        userID = intent.getStringExtra("CURRENT_USER_ID") ?: run {
+        currentUserID = intent.getStringExtra("CURRENT_USER_ID") ?: run {
             Log.e("SettingActivity", "CURRENT_USER_ID is missing")
             finish() // Close the activity if no user ID is provided
             return
@@ -56,7 +55,7 @@ class SettingActivity : AppCompatActivity() {
 
             // Update question number if provided
             if (questionNumber.isNotEmpty()) {
-                userSettingsRef.child(userID).child("questionNumber")
+                userSettingsRef.child(currentUserID).child("questionNumber")
                     .setValue(questionNumber.toInt())
                     .addOnSuccessListener {
                         Snackbar.make(
@@ -84,7 +83,7 @@ class SettingActivity : AppCompatActivity() {
             }
 
             if (selectedType != null) {
-                userSettingsRef.child(userID).child("questionType")
+                userSettingsRef.child(currentUserID).child("questionType")
                     .setValue(selectedType)
                     .addOnSuccessListener {
                         Snackbar.make(
@@ -112,7 +111,7 @@ class SettingActivity : AppCompatActivity() {
             }
 
             if (selectedDifficulty != null) {
-                userSettingsRef.child(userID).child("questionDifficulty")
+                userSettingsRef.child(currentUserID).child("questionDifficulty")
                     .setValue(selectedDifficulty)
                     .addOnSuccessListener {
                         Snackbar.make(
@@ -140,10 +139,23 @@ class SettingActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.settings_icon -> {
+                val newIntent = Intent(this, SettingActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+
+            R.id.stats -> {
+                val newIntent = Intent(this, UserStatsActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+
             R.id.home_icon -> {
-                // Navigate to the home activity (you can replace this with your target activity)
-                val newIntent = Intent(this, HomeActivity::class.java) // Assuming HomeActivity is your target activity
-                newIntent.putExtra("CURRENT_USER_ID", userID)
+                val newIntent = Intent(this, HomeActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
                 startActivity(newIntent)
                 return true
             }

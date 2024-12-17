@@ -1,5 +1,6 @@
 package com.example.cwquizapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -20,6 +21,7 @@ class QuestionActivity : AppCompatActivity() {
     private val questionsList = mutableListOf<TriviaQuestion>()
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
+    private lateinit var currentUserID: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +32,7 @@ class QuestionActivity : AppCompatActivity() {
 
         val catName = intent.getStringExtra("item_name").toString()
         val catTag = intent.getIntExtra("cat_tag", 0)
-        val userId = intent.getStringExtra("user_id").toString()
+        currentUserID = intent.getStringExtra("user_id").toString()
 
         val catTxt = findViewById<TextView>(R.id.cat_txt)
         catTxt.text = catName
@@ -47,7 +49,7 @@ class QuestionActivity : AppCompatActivity() {
 
         buttons.forEach { it.visibility = View.GONE }
 
-        fetchTriviaQuestions(catTag, userId) { triviaQuestions ->
+        fetchTriviaQuestions(catTag, currentUserID) { triviaQuestions ->
             if (triviaQuestions.isNotEmpty()) {
                 questionsList.clear()
                 questionsList.addAll(triviaQuestions)
@@ -67,7 +69,7 @@ class QuestionActivity : AppCompatActivity() {
                     it.setBackgroundColor(
                         ContextCompat.getColor(
                             this,
-                            R.color.DefaultButtonColor
+                            R.color.PrimaryColor
                         )
                     )
                 }
@@ -80,7 +82,7 @@ class QuestionActivity : AppCompatActivity() {
                 nextButton.visibility = View.GONE
 
                 val userStats = FirebaseDatabase.getInstance().getReference("userStats")
-                val userRef = userStats.child(userId)
+                val userRef = userStats.child(currentUserID)
 
                 // Fetch the current values for "correctAnswers" and the specific category
                 userRef.get().addOnSuccessListener { dataSnapshot ->
@@ -125,7 +127,7 @@ class QuestionActivity : AppCompatActivity() {
                 }
                 val userQuestionHistory =
                     FirebaseDatabase.getInstance().getReference("userQuestionHistory")
-                val userQuestHistoryRef = userQuestionHistory.child(userId)
+                val userQuestHistoryRef = userQuestionHistory.child(currentUserID)
                 val updateQuestionHistory = mapOf(
                     "question" to questionsList[currentQuestionIndex].question,
                     "answer" to selectedAnswer,
@@ -244,13 +246,28 @@ class QuestionActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val myView = findViewById<View>(R.id.main_toolbar)
         when (item.itemId) {
+            R.id.settings_icon -> {
+                val newIntent = Intent(this, SettingActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+
+            R.id.stats -> {
+                val newIntent = Intent(this, UserStatsActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+
             R.id.home_icon -> {
-                finish()
+                val newIntent = Intent(this, HomeActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
                 return true
             }
         }
-        return true
+        return super.onOptionsItemSelected(item)
     }
 }

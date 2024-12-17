@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/LightPrimaryColor"
+    android:background="@color/DarkPrimaryColor"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -12,9 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginBottom="75dp"
-        android:background="@color/DarkPrimaryColor"
+        android:background="@color/PrimaryColor"
         app:subtitleTextColor="@color/TextIcons" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,6 +29,7 @@
             android:layout_marginBottom="50dp"
             android:gravity="center"
             android:text="@string/cat_txt"
+            android:textColor="@color/TextIcons"
             android:textAlignment="center" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -40,6 +40,7 @@
             android:layout_marginBottom="50dp"
             android:gravity="center"
             android:text="@string/eg_q"
+            android:textColor="@color/TextIcons"
             android:textAlignment="center" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -47,14 +48,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="150dp"
-            android:text="" />
+            android:textColor="@color/TextIcons" />
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nxt_btn"
-        android:id="@+id/next_button"/>
+        android:id="@+id/next_button"
+        android:backgroundTint="@color/AccentColor"
+        android:textColor="@color/PrimaryText"/>
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -76,7 +79,8 @@
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/PrimaryColor"
-                android:text="@string/ans_txt" />
+                android:text="@string/ans_txt"
+                android:textColor="@color/TextIcons" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/user_choice2"
@@ -85,7 +89,8 @@
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/PrimaryColor"
-                android:text="@string/ans_txt" />
+                android:text="@string/ans_txt"
+                android:textColor="@color/TextIcons" />
         </LinearLayout>
     </FrameLayout>
 
@@ -109,7 +114,8 @@
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/PrimaryColor"
-                android:text="@string/ans_txt" />
+                android:text="@string/ans_txt"
+                android:textColor="@color/TextIcons" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/user_choice4"
@@ -118,7 +124,8 @@
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/PrimaryColor"
-                android:text="@string/ans_txt" />
+                android:text="@string/ans_txt"
+                android:textColor="@color/TextIcons" />
         </LinearLayout>
     </FrameLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -1,29 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/DarkPrimaryColor"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
+    <!-- Top Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/DarkPrimaryColor">
-    </com.google.android.material.appbar.MaterialToolbar>
+        android:background="@color/PrimaryColor"
+        app:titleTextColor="@color/TextIcons"
+        />
 
-    <!-- Add your child views here -->
-    <EditText
-        android:id="@+id/numberInput"
+    <!-- Input Field -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:hint="Enter a number"
-        android:inputType="number"
-        android:layout_marginTop="100dp"/>
+        android:layout_marginTop="100dp"
+        app:hintEnabled="true"
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="@color/AccentColor">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/numberInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_number_hint"
+            android:inputType="number"
+            android:textColor="@color/TextIcons" />
+    </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Question Type Toggle Group -->
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/question_type_group"
         android:layout_width="350dp"
@@ -36,29 +47,33 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="True Or False"
+            android:text="@string/true_or_false"
             style="?attr/materialButtonOutlinedStyle"
-            />
+            android:backgroundTint="@color/PrimaryColor"
+            android:textColor="@color/TextIcons" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/any_choice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="ANY"
+            android:text="@string/any_choice"
             style="?attr/materialButtonOutlinedStyle"
-            />
+            android:backgroundTint="@color/PrimaryColor"
+            android:textColor="@color/TextIcons" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/multiple_choice_choice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Multiple Choice"
+            android:text="@string/multiple_choice"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_margin="5dp" />
-
+            android:backgroundTint="@color/PrimaryColor"
+            android:textColor="@color/TextIcons" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <!-- Question Difficulty Toggle Group -->
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/question_difficulty_group"
         android:layout_width="350dp"
@@ -71,36 +86,42 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="EASY"
+            android:text="@string/easy"
             style="?attr/materialButtonOutlinedStyle"
-            />
+            android:backgroundTint="@color/PrimaryColor"
+            android:textColor="@color/TextIcons" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/mediumn_q_choice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="MEDIUM"
+            android:text="@string/medium"
             style="?attr/materialButtonOutlinedStyle"
-            />
+            android:backgroundTint="@color/PrimaryColor"
+            android:textColor="@color/TextIcons" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/hard_q_choice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="HARD"
+            android:text="@string/hard"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_margin="5dp" />
-
+            android:backgroundTint="@color/PrimaryColor"
+            android:textColor="@color/TextIcons" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
-    <Button
+    <!-- Save Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/saveButton"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/AccentColor"
-        android:text="UPDATE"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="100dp"
+        android:text="@string/update_button"
+        app:cornerRadius="16dp"
+        app:iconGravity="textStart"
+        app:backgroundTint="@color/AccentColor"
+        android:textColor="@color/LightPrimaryColor" />
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
