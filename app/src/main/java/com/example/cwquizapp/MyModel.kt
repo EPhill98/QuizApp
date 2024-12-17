@@ -1,7 +1,7 @@
 package com.example.cwquizapp
 
 class MyModel {
-    var modelName: String? = null
+    private var modelName: String? = null
     private var modelImage: Int = 0
     var modelCatTag: Int = 0
 
@@ -25,8 +25,8 @@ class MyModel {
         return modelImage
     }
 
-    fun setImage(image_drawable: Int){
-        this.modelImage = image_drawable
+    fun setImage(imageDrawable: Int){
+        this.modelImage = imageDrawable
     }
 
 }

@@ -1,4 +1,5 @@
 <resources>
+    <!-- General Strings -->
     <string name="app_name">cwQuizApp</string>
     <string name="welcome_text">Welcome to my quiz App!</string>
     <string name="enter_user_details">Enter Name &amp; Password</string>
@@ -33,6 +34,7 @@
     <string name="hard">HARD</string>
     <string name="update_button">UPDATE</string>
 
+    <!-- Category Strings -->
     <string name="sports_cat">Sports</string>
     <string name="geography_cat">Geography</string>
     <string name="food_cat">Food</string>
@@ -41,6 +43,15 @@
     <string name="science_cat">Science</string>
     <string name="art_cat">Art</string>
     <string name="music_cat">Music</string>
+
+    <!-- Strings for HomeActivity -->
+    <string name="welcome_message">WELCOME %1$s</string>
+    <string name="error_getting_user_email">Error getting user email: %1$s</string>
+    <string name="unknown">Unknown</string>
+    <string name="no_category_selected">No category selected</string>
+    <string name="error_fetching_last_category">Error fetching lastCategory: %1$s</string>
+    <string name="in_on_start">in onStart</string>
+    <string name="in_on_resume">in onResume</string>
 
     <!-- Strings for UserStatsActivity -->
     <string name="current_user_id_null">Current User ID is null!</string>
@@ -55,4 +66,17 @@
     <string name="food">Food</string>
     <string name="movies">Movies</string>
     <string name="categories">Categories</string>
+    <string name="question_difficulty">DIFFICULTY\n</string>
+    <string name="question_type">QUESTION TYPE</string>
+
+    <!-- Strings for QuestionActivity -->
+    <string name="question_error_fetch">Error fetching trivia questions!</string>
+    <string name="question_error_parsing">Error parsing trivia questions!</string>
+    <string name="firebase_error_fetch_data">Failed to fetch user data</string>
+    <string name="firebase_error_update_data">Failed to update user data</string>
+    <string name="firebase_success_update_data">Data successfully updated</string>
+    <string name="correct">Correct</string>
+    <string name="incorrect">Incorrect</string>
+    <string name="end_of_questions">End of questions. Your score is %1$d out of %2$d</string>
+
 </resources>

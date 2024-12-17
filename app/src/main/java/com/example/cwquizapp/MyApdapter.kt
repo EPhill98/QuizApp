@@ -10,9 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
 
-class MyApdapter(private val imageModelArrayList: MutableList<MyModel>, currentUserID: String) : RecyclerView.Adapter<MyApdapter.ViewHolder>(){
-
-    private val currentUserID = currentUserID
+class MyApdapter(private val imageModelArrayList: MutableList<MyModel>, private val currentUserID: String) : RecyclerView.Adapter<MyApdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyApdapter.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)

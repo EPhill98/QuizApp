@@ -34,35 +34,32 @@ class HomeActivity : AppCompatActivity() {
         val root = findViewById<View>(android.R.id.content)
 
         // Fetch email and display welcome message
-        val usersRef: DatabaseReference = firebaseDatabase.getReference("users").child(currentUserID!!)
+        val usersRef: DatabaseReference = firebaseDatabase.getReference("users").child(currentUserID)
         usersRef.child("email").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val userEmail = dataSnapshot.getValue(String::class.java)
-                val welcomeSnackbar = Snackbar.make(root, "WELCOME $userEmail", Snackbar.LENGTH_LONG)
+                val welcomeMessage = getString(R.string.welcome_message, userEmail)
+                val welcomeSnackbar = Snackbar.make(root, welcomeMessage, Snackbar.LENGTH_LONG)
                 welcomeSnackbar.show()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeActivity", "Error getting user email: ${error.message}")
+                Log.e("HomeActivity", getString(R.string.error_getting_user_email, error.message))
             }
         })
 
         // Fetch last login time
         usersRef.get().addOnSuccessListener { dataSnapshot ->
-                val userLoginTime = dataSnapshot.child("oldLogin").getValue(Long::class.java)
-                val lastLoginTimeTXT = findViewById<TextView>(R.id.lastLoginTxt)
+            val userLoginTime = dataSnapshot.child("oldLogin").getValue(Long::class.java)
+            val lastLoginTimeTXT = findViewById<TextView>(R.id.lastLoginTxt)
 
-                if (userLoginTime != null) {
-                    val formattedTime = formatTimestamp(userLoginTime)
-                    lastLoginTimeTXT.text = "$formattedTime"
-                } else {
-                    lastLoginTimeTXT.text = "Unknown"
-                }
+            if (userLoginTime != null) {
+                val formattedTime = formatTimestamp(userLoginTime)
+                lastLoginTimeTXT.text = formattedTime
+            } else {
+                lastLoginTimeTXT.text = getString(R.string.unknown)
             }
-
-
-
-
+        }
 
         // Set up the toolbar
         val myToolbar: Toolbar = findViewById(R.id.main_toolbar)
@@ -128,26 +125,29 @@ class HomeActivity : AppCompatActivity() {
         val dateFormat = java.text.SimpleDateFormat("MMM dd, yyyy, hh:mm a", java.util.Locale.getDefault())
         return dateFormat.format(date)
     }
+
     // Helper function to fetch last category and update UI
     private fun fetchAndDisplayLastCategory() {
-        val userStatsRef: DatabaseReference = firebaseDatabase.getReference("userStats").child(currentUserID!!)
+        val userStatsRef: DatabaseReference = firebaseDatabase.getReference("userStats").child(
+            currentUserID
+        )
 
         userStatsRef.child("lastCategory").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val lastCategory = dataSnapshot.getValue(String::class.java) ?: "No category selected"
+                val lastCategory = dataSnapshot.getValue(String::class.java) ?: getString(R.string.no_category_selected)
                 val lastCategoryTextView = findViewById<TextView>(R.id.lastCatTxt)
                 lastCategoryTextView.text = lastCategory
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("KYS154", "Error fetching lastCategory: ${error.message}")
+                Log.e("KYS154", getString(R.string.error_fetching_last_category, error.message))
             }
         })
     }
 
     override fun onStart() {
         super.onStart()
-        Log.i("EPDP123", "in onStart")
+        Log.i("EPDP123", getString(R.string.in_on_start))
         // Fetch and display last category
         fetchAndDisplayLastCategory()
     }
@@ -155,14 +155,13 @@ class HomeActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        Log.i("EPDP123", "in onResume")
+        Log.i("EPDP123", getString(R.string.in_on_resume))
 
         // Fetch and display last category again on resume
         fetchAndDisplayLastCategory()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val myView = findViewById<View>(R.id.main_toolbar)
         when (item.itemId) {
             R.id.settings_icon -> {
                 val newIntent = Intent(this, SettingActivity::class.java)
@@ -179,7 +178,4 @@ class HomeActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-
-
 }

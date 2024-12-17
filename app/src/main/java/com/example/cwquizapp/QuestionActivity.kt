@@ -17,7 +17,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class QuestionActivity : AppCompatActivity() {
-//test
     private val questionsList = mutableListOf<TriviaQuestion>()
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
@@ -57,7 +56,7 @@ class QuestionActivity : AppCompatActivity() {
                 correctAnswers = 0
                 showQuestion(questionsList[currentQuestionIndex])
             } else {
-                Log.e("QuestionActivity", "No questions fetched")
+                Log.e("QuestionActivity", getString(R.string.question_error_fetch))
             }
         }
 
@@ -77,7 +76,7 @@ class QuestionActivity : AppCompatActivity() {
                 showQuestion(questionsList[currentQuestionIndex])
             } else {
                 choiceTxt.text =
-                    "End of questions. Your score is $correctAnswers out of ${questionsList.size}"
+                    getString(R.string.end_of_questions, correctAnswers, questionsList.size)
                 Log.d("QuestionActivity", "End of questions")
                 nextButton.visibility = View.GONE
 
@@ -103,27 +102,27 @@ class QuestionActivity : AppCompatActivity() {
 
                     userRef.updateChildren(updates)
                         .addOnSuccessListener {
-                            Log.d("Firebase", "Data successfully updated")
+                            Log.d("Firebase", getString(R.string.firebase_success_update_data))
                         }
                         .addOnFailureListener { exception ->
-                            Log.e("Firebase", "Failed to update data", exception)
+                            Log.e("Firebase", getString(R.string.firebase_error_update_data), exception)
                         }
                 }.addOnFailureListener { exception ->
-                    Log.e("Firebase", "Failed to fetch data", exception)
+                    Log.e("Firebase", getString(R.string.firebase_error_fetch_data), exception)
                 }
             }
         }
 
-        buttons.forEachIndexed { index, button ->
+        buttons.forEachIndexed { _, button ->
             nextButton.visibility = View.GONE
             choiceTxt.text = getString(R.string.choice_txt)
             button.setOnClickListener {
                 val selectedAnswer = button.text.toString()
                 if (selectedAnswer == questionsList[currentQuestionIndex].correctAnswer) {
                     correctAnswers++
-                    choiceTxt.text = "Correct"
+                    choiceTxt.text = getString(R.string.correct)
                 } else {
-                    choiceTxt.text = "Incorrect"
+                    choiceTxt.text = getString(R.string.incorrect)
                 }
                 val userQuestionHistory =
                     FirebaseDatabase.getInstance().getReference("userQuestionHistory")
@@ -179,11 +178,10 @@ class QuestionActivity : AppCompatActivity() {
             val questionNum = dataSnapshot.child("questionNumber").getValue(Int::class.java) ?: 10 // Default to 10 if null
             val questionType = dataSnapshot.child("questionType").getValue(String::class.java)
             val questionDifficulty = dataSnapshot.child("questionDifficulty").getValue(String::class.java) ?: "medium"
-            val url: String
-            if (questionType != "any") {
-                url = "https://opentdb.com/api.php?amount=$questionNum&category=$catTag&difficulty=$questionDifficulty&type=$questionType"
+            val url: String = if (questionType != "any") {
+                "https://opentdb.com/api.php?amount=$questionNum&category=$catTag&difficulty=$questionDifficulty&type=$questionType"
             } else {
-                url = "https://opentdb.com/api.php?amount=$questionNum&category=$catTag&difficulty=$questionDifficulty"
+                "https://opentdb.com/api.php?amount=$questionNum&category=$catTag&difficulty=$questionDifficulty"
             }
             Log.i("EPDP123", url)
             fetchQuestionsFromApi(url, callback)
@@ -197,7 +195,7 @@ class QuestionActivity : AppCompatActivity() {
             .setCallback { e, result ->
                 if (e != null) {
                     e.printStackTrace()
-                    Log.e("QuestionActivity", "Error fetching questions")
+                    Log.e("QuestionActivity", getString(R.string.question_error_fetch))
                     callback(emptyList())
                     return@setCallback
                 }
@@ -226,7 +224,7 @@ class QuestionActivity : AppCompatActivity() {
                     callback(questionsLst)
                 } catch (ex: Exception) {
                     ex.printStackTrace()
-                    Log.e("QuestionActivity", "Error parsing JSON")
+                    Log.e("QuestionActivity", getString(R.string.question_error_parsing))
                     callback(emptyList())
                 }
             }

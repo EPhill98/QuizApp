@@ -203,7 +203,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val myView = findViewById<View>(R.id.main_toolbar)
         when (item.itemId) {
             R.id.settings_icon -> {
                 val newIntent = Intent(this, SettingActivity::class.java)

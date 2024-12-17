@@ -52,17 +52,29 @@ class UserStatsActivity : AppCompatActivity() {
 
         userStatsRef.get()
             .addOnSuccessListener { dataSnapshot ->
-                val entries = listOf(
-                    PieEntry(dataSnapshot.child("Science").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.science)),
-                    PieEntry(dataSnapshot.child("Music").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.music)),
-                    PieEntry(dataSnapshot.child("Sports").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.sports)),
-                    PieEntry(dataSnapshot.child("Geography").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.geography)),
-                    PieEntry(dataSnapshot.child("History").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.history)),
-                    PieEntry(dataSnapshot.child("Art").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.art)),
-                    PieEntry(dataSnapshot.child("Food").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.food)),
-                    PieEntry(dataSnapshot.child("Movies").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.movies))
+                val entries = mutableListOf<PieEntry>()
+
+                // List of categories and their corresponding Firebase field names
+                val categories = listOf(
+                    Pair("Science", getString(R.string.science)),
+                    Pair("Music", getString(R.string.music)),
+                    Pair("Sports", getString(R.string.sports)),
+                    Pair("Geography", getString(R.string.geography)),
+                    Pair("History", getString(R.string.history)),
+                    Pair("Art", getString(R.string.art)),
+                    Pair("Food", getString(R.string.food)),
+                    Pair("Movies", getString(R.string.movies))
                 )
 
+                // Loop through the categories and add only non-zero values to the Pie chart
+                for (category in categories) {
+                    val value = dataSnapshot.child(category.first).getValue(Int::class.java) ?: 0
+                    if (value > 0) {
+                        entries.add(PieEntry(value.toFloat(), category.second))
+                    }
+                }
+
+                // Create the dataset for the pie chart
                 val dataSet = PieDataSet(entries, getString(R.string.categories)).apply {
                     colors = listOf(
                         Color.BLUE, Color.RED, Color.GREEN, Color.MAGENTA,
@@ -72,11 +84,14 @@ class UserStatsActivity : AppCompatActivity() {
                     valueTextSize = 12f
                 }
 
+                // Apply the dataset to the Pie chart
                 pieChart.apply {
                     data = PieData(dataSet)
                     description.isEnabled = false
                     setEntryLabelColor(Color.BLACK)
                     setEntryLabelTextSize(12f)
+                    legend.isEnabled = false
+                    //isDrawHoleEnabled = false
                     invalidate()
                 }
             }
