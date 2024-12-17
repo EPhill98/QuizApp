@@ -9,11 +9,6 @@
     <string name="logout_button">LOGOUT</string>
     <string name="reg_button">REGISTER</string>
 
-
-
-
-
-
     <string name="cat_txt">Category: </string>
     <string name="eg_q">GOOD LUCK!</string>
     <string name="choice_txt">Make a Choice</string>
@@ -23,12 +18,10 @@
     <string name="greeting_text">Hello! Please sign in or register below!\n</string>
     <string name="logged_in">Welcome %1$s\n</string>
 
-
     <string name="last_login">Last Login: </string>
     <string name="current_streak">Current Streak: </string>
     <string name="last_category">Last Category: </string>
     <string name="no_data">No Data</string>
-
 
     <string name="toolbar_title">Update Question</string>
     <string name="enter_number_hint">Enter a number</string>
@@ -49,4 +42,17 @@
     <string name="art_cat">Art</string>
     <string name="music_cat">Music</string>
 
+    <!-- Strings for UserStatsActivity -->
+    <string name="current_user_id_null">Current User ID is null!</string>
+    <string name="failed_fetch_user_stats">Failed to fetch user stats</string>
+    <string name="failed_fetch_question_history">Failed to fetch question history</string>
+    <string name="science">Science</string>
+    <string name="music">Music</string>
+    <string name="sports">Sports</string>
+    <string name="geography">Geography</string>
+    <string name="history">History</string>
+    <string name="art">Art</string>
+    <string name="food">Food</string>
+    <string name="movies">Movies</string>
+    <string name="categories">Categories</string>
 </resources>

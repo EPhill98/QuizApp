@@ -26,7 +26,7 @@ class UserStatsActivity : AppCompatActivity() {
 
         // Initialize the current user ID
         currentUserID = intent.getStringExtra("CURRENT_USER_ID") ?: run {
-            Log.e(TAG, "Current User ID is null!")
+            Log.e("EPDP123", getString(R.string.current_user_id_null))
             return
         }
 
@@ -53,17 +53,17 @@ class UserStatsActivity : AppCompatActivity() {
         userStatsRef.get()
             .addOnSuccessListener { dataSnapshot ->
                 val entries = listOf(
-                    PieEntry(dataSnapshot.child("Science").getValue(Int::class.java)?.toFloat() ?: 0f, "Science"),
-                    PieEntry(dataSnapshot.child("Music").getValue(Int::class.java)?.toFloat() ?: 0f, "Music"),
-                    PieEntry(dataSnapshot.child("Sports").getValue(Int::class.java)?.toFloat() ?: 0f, "Sports"),
-                    PieEntry(dataSnapshot.child("Geography").getValue(Int::class.java)?.toFloat() ?: 0f, "Geography"),
-                    PieEntry(dataSnapshot.child("History").getValue(Int::class.java)?.toFloat() ?: 0f, "History"),
-                    PieEntry(dataSnapshot.child("Art").getValue(Int::class.java)?.toFloat() ?: 0f, "Art"),
-                    PieEntry(dataSnapshot.child("Food").getValue(Int::class.java)?.toFloat() ?: 0f, "Food"),
-                    PieEntry(dataSnapshot.child("Movies").getValue(Int::class.java)?.toFloat() ?: 0f, "Movies")
+                    PieEntry(dataSnapshot.child("Science").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.science)),
+                    PieEntry(dataSnapshot.child("Music").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.music)),
+                    PieEntry(dataSnapshot.child("Sports").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.sports)),
+                    PieEntry(dataSnapshot.child("Geography").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.geography)),
+                    PieEntry(dataSnapshot.child("History").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.history)),
+                    PieEntry(dataSnapshot.child("Art").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.art)),
+                    PieEntry(dataSnapshot.child("Food").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.food)),
+                    PieEntry(dataSnapshot.child("Movies").getValue(Int::class.java)?.toFloat() ?: 0f, getString(R.string.movies))
                 )
 
-                val dataSet = PieDataSet(entries, "Categories").apply {
+                val dataSet = PieDataSet(entries, getString(R.string.categories)).apply {
                     colors = listOf(
                         Color.BLUE, Color.RED, Color.GREEN, Color.MAGENTA,
                         Color.YELLOW, Color.CYAN, Color.GRAY, Color.DKGRAY
@@ -81,7 +81,7 @@ class UserStatsActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e(TAG, "Failed to fetch user stats", exception)
+                Log.e("EPDP123", getString(R.string.failed_fetch_user_stats), exception)
             }
     }
 
@@ -120,7 +120,7 @@ class UserStatsActivity : AppCompatActivity() {
                 callback(questionList.asReversed())
             }
             .addOnFailureListener { exception ->
-                Log.e(TAG, "Failed to fetch question history", exception)
+                Log.e("EPDP123", getString(R.string.failed_fetch_question_history), exception)
                 callback(mutableListOf())
             }
     }
@@ -141,9 +141,5 @@ class UserStatsActivity : AppCompatActivity() {
         newIntent.putExtra("CURRENT_USER_ID", currentUserID)
         startActivity(newIntent)
         return true
-    }
-
-    companion object {
-        private const val TAG = "UserStatsActivity"
     }
 }
