@@ -117,7 +117,7 @@ class UserStatsActivity : AppCompatActivity() {
                     } else null
                 }.toMutableList()
 
-                callback(questionList)
+                callback(questionList.asReversed())
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Failed to fetch question history", exception)
