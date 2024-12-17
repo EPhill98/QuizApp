@@ -17,8 +17,6 @@ class MyApdapter(private val imageModelArrayList: MutableList<MyModel>, currentU
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyApdapter.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val myView = inflater.inflate(R.layout.list_row_layout, parent, false)
-
-
         return ViewHolder(myView)
     }
 

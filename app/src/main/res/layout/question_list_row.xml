@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@color/DarkPrimaryColor"
+    android:layout_margin="5dp">
+
+    <!-- Question Text -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/question_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="EXAMPLE QUESTION"
+        android:textColor="@color/PrimaryText"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:background="@color/LightPrimaryColor" /> <!-- Changed from backgroundTint to background -->
+
+    <!-- Answers Section (side by side) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/question_txt"
+        android:gravity="center_horizontal">
+
+        <!-- Correct Answer -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/correct_answer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="CORRECT ANSWER"
+            android:textColor="@color/LightPrimaryColor"
+            android:textSize="16sp"
+            android:gravity="center" />
+
+        <!-- User Answer -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/user_answer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="USER ANSWER"
+            android:textColor="@color/LightPrimaryColor"
+            android:textSize="16sp"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+</RelativeLayout>

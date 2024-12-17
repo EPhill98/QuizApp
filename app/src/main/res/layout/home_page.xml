@@ -53,7 +53,7 @@
                     android:id="@+id/lastLoginTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="31/10/2024"
+                    android:text="@string/no_data"
                     android:textColor="@color/TextIcons" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -74,7 +74,7 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10"
+                    android:text="@string/no_data"
                     android:textColor="@color/TextIcons" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
