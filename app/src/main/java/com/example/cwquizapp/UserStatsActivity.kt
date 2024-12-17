@@ -91,7 +91,7 @@ class UserStatsActivity : AppCompatActivity() {
                     setEntryLabelColor(Color.BLACK)
                     setEntryLabelTextSize(12f)
                     legend.isEnabled = false
-                    //isDrawHoleEnabled = false
+                    setHoleColor(Color.TRANSPARENT)
                     invalidate()
                 }
             }
