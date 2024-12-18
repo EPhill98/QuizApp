@@ -24,18 +24,16 @@ internal class NotificationHelper(base: Context) : ContextWrapper(base) {
 
     private fun createChannels() {
         // Creating a notification channel if not already created (for Android O and above)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                enableLights(true)
-                enableVibration(true)
-                lightColor = android.graphics.Color.RED
-                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                setShowBadge(true)
-            }
-            manager?.createNotificationChannel(notificationChannel)
+        val notificationChannel = NotificationChannel(
+            CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            enableLights(true)
+            enableVibration(true)
+            lightColor = android.graphics.Color.RED
+            lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            setShowBadge(true)
         }
+        manager?.createNotificationChannel(notificationChannel)
     }
 
     fun getNotification(title: String, content: String): NotificationCompat.Builder {

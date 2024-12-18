@@ -79,5 +79,12 @@
     <string name="medium">MEDIUM</string>
     <string name="hard">HARD</string>
     <string name="update_button">UPDATE</string>
+    <string name="error_logout_first">PLEASE LOGOUT FIRST</string>
+    <string name="error_no_user_logged_in">NO USER LOGGED IN</string>
+    <string name="error_registration_failed">FAILED TO REGISTER</string>
+    <string name="error_login_failed">LOGIN FAILED</string>
+    <string name="error_invalid_email">INVAILD EMAIL</string>
+    <string name="logged_in_message">LOGGED IN %1$D</string>
+
 
 </resources>
