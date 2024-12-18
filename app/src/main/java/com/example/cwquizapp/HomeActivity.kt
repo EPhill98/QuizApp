@@ -140,7 +140,7 @@ class HomeActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("KYS154", getString(R.string.error_fetching_last_category, error.message))
+                Log.e("EPDP", getString(R.string.error_fetching_last_category, error.message))
             }
         })
     }
@@ -163,6 +163,12 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.home_icon -> {
+                val newIntent = Intent(this, HomeActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
             R.id.settings_icon -> {
                 val newIntent = Intent(this, SettingActivity::class.java)
                 newIntent.putExtra("CURRENT_USER_ID", currentUserID)
@@ -172,6 +178,17 @@ class HomeActivity : AppCompatActivity() {
             R.id.stats -> {
                 val newIntent = Intent(this, UserStatsActivity::class.java)
                 newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+            R.id.notification -> {
+                val newIntent = Intent(this, NotificationActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+            R.id.logOut -> {
+                val newIntent = Intent(this, MainActivity::class.java)
                 startActivity(newIntent)
                 return true
             }

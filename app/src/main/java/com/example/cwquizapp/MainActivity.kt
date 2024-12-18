@@ -2,6 +2,8 @@ package com.example.cwquizapp
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -10,13 +12,22 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.Manifest
+import android.app.Notification.EXTRA_CHANNEL_ID
+import android.provider.Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
+import android.provider.Settings.EXTRA_APP_PACKAGE
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 
 class MainActivity : AppCompatActivity() {
+
+    private val REQUEST_CODE_POST_NOTIFICATIONS = 141
+    private var notificationHelper: NotificationHelper? = null
 
     // UI Elements
     private lateinit var emailTxt: EditText
@@ -40,6 +51,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.i(logCatTag, "in onCreate")
         setContentView(R.layout.activity_main)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Check if the OS is Android 13 or higher
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+                // Request the permission if not already granted
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    REQUEST_CODE_POST_NOTIFICATIONS
+                )
+            }
+            notificationHelper = NotificationHelper(this)
+        }
 
         // Initialize UI elements
         emailTxt = findViewById(R.id.emailTxt)
@@ -201,6 +226,21 @@ class MainActivity : AppCompatActivity() {
     private fun displayMsg(view: View, msgTxt: String) {
         Snackbar.make(view, msgTxt, Snackbar.LENGTH_SHORT).show()
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode){
+            REQUEST_CODE_POST_NOTIFICATIONS -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                }
+            }
+        }
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

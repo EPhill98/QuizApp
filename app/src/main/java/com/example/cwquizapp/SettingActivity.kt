@@ -139,23 +139,32 @@ class SettingActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.home_icon -> {
+                val newIntent = Intent(this, HomeActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
             R.id.settings_icon -> {
                 val newIntent = Intent(this, SettingActivity::class.java)
                 newIntent.putExtra("CURRENT_USER_ID", currentUserID)
                 startActivity(newIntent)
                 return true
             }
-
             R.id.stats -> {
                 val newIntent = Intent(this, UserStatsActivity::class.java)
                 newIntent.putExtra("CURRENT_USER_ID", currentUserID)
                 startActivity(newIntent)
                 return true
             }
-
-            R.id.home_icon -> {
-                val newIntent = Intent(this, HomeActivity::class.java)
+            R.id.notification -> {
+                val newIntent = Intent(this, NotificationActivity::class.java)
                 newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+            R.id.logOut -> {
+                val newIntent = Intent(this, MainActivity::class.java)
                 startActivity(newIntent)
                 return true
             }

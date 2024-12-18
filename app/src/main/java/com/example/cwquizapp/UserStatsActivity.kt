@@ -146,15 +146,37 @@ class UserStatsActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val newIntent = Intent(this, when (item.itemId) {
-            R.id.settings_icon -> SettingActivity::class.java
-            R.id.stats -> UserStatsActivity::class.java
-            R.id.home_icon -> HomeActivity::class.java
-            else -> return super.onOptionsItemSelected(item)
-        })
-
-        newIntent.putExtra("CURRENT_USER_ID", currentUserID)
-        startActivity(newIntent)
-        return true
+        when (item.itemId) {
+            R.id.home_icon -> {
+                val newIntent = Intent(this, HomeActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+            R.id.settings_icon -> {
+                val newIntent = Intent(this, SettingActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+            R.id.stats -> {
+                val newIntent = Intent(this, UserStatsActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+            R.id.notification -> {
+                val newIntent = Intent(this, NotificationActivity::class.java)
+                newIntent.putExtra("CURRENT_USER_ID", currentUserID)
+                startActivity(newIntent)
+                return true
+            }
+            R.id.logOut -> {
+                val newIntent = Intent(this, MainActivity::class.java)
+                startActivity(newIntent)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

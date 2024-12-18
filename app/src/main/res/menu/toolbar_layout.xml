@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <!-- Menu item example -->
     <item
@@ -21,4 +22,14 @@
         android:icon="@drawable/stats"
         app:showAsAction="ifRoom"
         />
+    <item
+        android:id="@+id/notification"
+        android:title="Notifiations"
+        android:icon="@drawable/ic_bell"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/logOut"
+        android:title="Logout"
+        android:icon="@drawable/logout"
+        app:showAsAction="ifRoom" />
 </menu>
